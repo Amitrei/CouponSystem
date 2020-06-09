@@ -24,7 +24,15 @@ public class Company {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.id=getIdFromDB.getCompanyID(name,email);
+
+    }
+
+  // CTOR for CompaniesDBDAO - getAllCompanies
+    public Company(int id,String name, String email, String password) throws SQLException, InterruptedException {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.id=id;
 
     }
 
