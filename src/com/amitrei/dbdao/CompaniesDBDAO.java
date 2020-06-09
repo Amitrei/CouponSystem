@@ -33,7 +33,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             while (resultSet.next()) {
                 isExists = resultSet.getInt(1);
             }
-            if (isExists > 0) return true;
+            return isExists > 0;
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -60,7 +60,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             while (resultSet.next()) {
                 isExists = resultSet.getInt(1);
             }
-            if (isExists > 0) return true;
+            return isExists > 0;
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
