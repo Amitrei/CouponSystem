@@ -1,7 +1,5 @@
 package com.amitrei.beans;
 
-import com.amitrei.utils.getIdFromDB;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

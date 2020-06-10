@@ -5,6 +5,7 @@ import com.amitrei.beans.Customer;
 import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
 import com.amitrei.exceptions.CustomerAlreadyExistsException;
+import com.amitrei.exceptions.CustomerDoesNotExists;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -95,14 +96,17 @@ public class CustomersDBDAO implements CustomersDAO {
 
             // Iterate over all the added customers
             for (int i = 0; i < customer.length; i++) {
-                try {
+
                     if (isCustomerExists(customer[i].getEmail(), customer[i].getPassword())) {
+                        try {
                         throw new CustomerAlreadyExistsException(customer[i].getEmail());
+                        }
+                        catch (CustomerAlreadyExistsException e) {
+                            System.out.println(e.getMessage());
+                            continue;
+                        }
                     }
-                } catch (CustomerAlreadyExistsException e) {
-                    System.out.println(e.getMessage());
-                    continue;
-                }
+
 
                 preparedStatement.setString(1, customer[i].getFirstName());
                 preparedStatement.setString(2, customer[i].getLastName());
@@ -130,6 +134,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
     public void updateCustomer(int customerID, Customer customer) {
         try {
+
             connection = ConnectionPool.getInstance().getConnection();
             String sql = "UPDATE `couponsystem`.`customers` SET `FIRST_NAME` = ?, `LAST_NAME` = ?, `EMAIL` = ?,`PASSWORD` = ?  WHERE (`ID` = ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -153,12 +158,24 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
     public void deleteCustomer(int... customerID) {
+        Connection connection2 = null;
         try {
-            connection = ConnectionPool.getInstance().getConnection();
+            connection2 = ConnectionPool.getInstance().getConnection();
             String sql = "DELETE FROM `couponsystem`.`customers` WHERE ID=?";
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             for (int i = 0; i < customerID.length; i++) {
+
+                    if (!isCustomerExists(customerID[i])) {
+                        try {
+                        throw new CustomerDoesNotExists(customerID[i]);
+                        }
+                        catch (CustomerDoesNotExists e) {
+                            System.out.println(e.getMessage());
+                            continue;
+                        }
+                    }
+
                 preparedStatement.setInt(1, customerID[i]);
                 preparedStatement.executeUpdate();
                 System.out.println("The customer with the id: " + customerID[i] + " deleted successfully.");
@@ -167,11 +184,11 @@ public class CustomersDBDAO implements CustomersDAO {
             System.out.println(e.getMessage());
         } finally {
             try {
-                ConnectionPool.getInstance().restoreConnection(connection);
+                ConnectionPool.getInstance().restoreConnection(connection2);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            connection = null;
+            connection2 = null;
         }
     }
 

@@ -13,7 +13,9 @@ public class Coupon {
     private double price;
     private String image;
 
-    public Coupon(int id, int companyID, Category category, String title, Date startDate, Date endDate, int amount, double price, String image) {
+    private String description;
+
+    public Coupon(int id, int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
         this.id = id;
         CompanyID = companyID;
         this.category = category;
@@ -23,6 +25,21 @@ public class Coupon {
         this.amount = amount;
         this.price = price;
         this.image = image;
+        this.description = description;
+    }
+
+    public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
+
+        CompanyID = companyID;
+        this.category = category;
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.amount = amount;
+        this.price = price;
+        this.image = image;
+        this.description = description;
+
     }
 
     public int getId() {
@@ -35,6 +52,10 @@ public class Coupon {
 
     public int getCompanyID() {
         return CompanyID;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setCompanyID(int companyID) {
@@ -57,16 +78,16 @@ public class Coupon {
         this.title = title;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public java.sql.Date getStartDate() {
+        return new java.sql.Date(startDate.getTime());
     }
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public java.sql.Date getEndDate() {
+        return new java.sql.Date(endDate.getTime());
     }
 
     public void setEndDate(Date endDate) {
