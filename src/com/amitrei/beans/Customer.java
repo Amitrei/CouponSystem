@@ -20,6 +20,22 @@ public class Customer {
         this.coupons = coupons;
     }
 
+    public Customer(String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+
+
+    }
+
+    public Customer(int id, String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.id=id;
+    }
     public int getId() {
         return id;
     }
