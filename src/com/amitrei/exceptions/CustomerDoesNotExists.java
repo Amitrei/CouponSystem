@@ -6,6 +6,6 @@ public class CustomerDoesNotExists extends Exception {
     }
 
     public CustomerDoesNotExists(int CustomerID) {
-        super("Sorry the customer id : " + CustomerID + " is not exists");
+        super("Sorry the customer id : " + CustomerID + " does not exists");
     }
 }

@@ -15,19 +15,9 @@ public class Coupon {
 
     private String description;
 
-    public Coupon(int id, int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-        this.id = id;
-        CompanyID = companyID;
-        this.category = category;
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.amount = amount;
-        this.price = price;
-        this.image = image;
-        this.description = description;
-    }
-
+    /**
+     * CTOR for method addCoupon - without coupon id argument.
+     */
     public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
 
         CompanyID = companyID;
@@ -42,6 +32,24 @@ public class Coupon {
 
     }
 
+    /**
+     * CTOR for getCoupon methods - CategoryID as an int instead of Category.
+     */
+
+    public Coupon(int getID, int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
+        this.id=getID;
+        CompanyID = companyID;
+        // Converting int CategoryID --> Category
+        this.category = Category.values()[CategoryID-1];
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.amount = amount;
+        this.price = price;
+        this.image = image;
+        this.description = description;
+
+    }
     public int getId() {
         return id;
     }
@@ -82,7 +90,7 @@ public class Coupon {
         return new java.sql.Date(startDate.getTime());
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(java.util.Date startDate) {
         this.startDate = startDate;
     }
 
@@ -90,7 +98,7 @@ public class Coupon {
         return new java.sql.Date(endDate.getTime());
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(java.util.Date endDate) {
         this.endDate = endDate;
     }
 

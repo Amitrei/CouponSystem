@@ -1,6 +1,5 @@
 package com.amitrei.dbdao;
 
-import com.amitrei.beans.Company;
 import com.amitrei.beans.Customer;
 import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
@@ -84,7 +83,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
-    public void addCustomer(Customer... customer) {
+    public void addCustomer(Customer... customers) {
         /**
          * Making a local connection to prevent NullPointerException because of the isCustomerExists method and the finally block.
          */
@@ -95,11 +94,10 @@ public class CustomersDBDAO implements CustomersDAO {
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
 
             // Iterate over all the added customers
-            for (int i = 0; i < customer.length; i++) {
-
-                    if (isCustomerExists(customer[i].getEmail(), customer[i].getPassword())) {
+                    for(Customer customer : customers) {
+                    if (isCustomerExists(customer.getEmail(), customer.getPassword())) {
                         try {
-                        throw new CustomerAlreadyExistsException(customer[i].getEmail());
+                        throw new CustomerAlreadyExistsException(customer.getEmail());
                         }
                         catch (CustomerAlreadyExistsException e) {
                             System.out.println(e.getMessage());
@@ -108,12 +106,12 @@ public class CustomersDBDAO implements CustomersDAO {
                     }
 
 
-                preparedStatement.setString(1, customer[i].getFirstName());
-                preparedStatement.setString(2, customer[i].getLastName());
-                preparedStatement.setString(3, customer[i].getEmail());
-                preparedStatement.setString(4, customer[i].getPassword());
+                preparedStatement.setString(1, customer.getFirstName());
+                preparedStatement.setString(2, customer.getLastName());
+                preparedStatement.setString(3, customer.getEmail());
+                preparedStatement.setString(4, customer.getPassword());
                 preparedStatement.executeUpdate();
-                System.out.println("Customer " + customer[i].getEmail() + " created successfully");
+                System.out.println("Customer " + customer.getEmail() + " created successfully");
 
 
             }
@@ -164,11 +162,11 @@ public class CustomersDBDAO implements CustomersDAO {
             String sql = "DELETE FROM `couponsystem`.`customers` WHERE ID=?";
 
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-            for (int i = 0; i < customerID.length; i++) {
+           for(int customerId : customerID) {
 
-                    if (!isCustomerExists(customerID[i])) {
+                    if (!isCustomerExists(customerId)) {
                         try {
-                        throw new CustomerDoesNotExists(customerID[i]);
+                        throw new CustomerDoesNotExists(customerId);
                         }
                         catch (CustomerDoesNotExists e) {
                             System.out.println(e.getMessage());
@@ -176,9 +174,9 @@ public class CustomersDBDAO implements CustomersDAO {
                         }
                     }
 
-                preparedStatement.setInt(1, customerID[i]);
+                preparedStatement.setInt(1, customerId);
                 preparedStatement.executeUpdate();
-                System.out.println("The customer with the id: " + customerID[i] + " deleted successfully.");
+                System.out.println("The customer with the id: " + customerId + " deleted successfully.");
             }
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
