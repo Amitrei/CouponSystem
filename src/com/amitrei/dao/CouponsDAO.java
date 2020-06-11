@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CouponsDAO {
     void addCoupon(Coupon... coupon);
-    void updateCoupon(int couponID,Coupon coupon);
+    void updateCoupon(int couponID,Coupon coupon) throws CouponNotFoundException;
     void deleteCoupon (int... couponID);
     List<Coupon> getAllCoupons();
     Coupon getOneCoupon(int couponID) throws CouponNotFoundException;

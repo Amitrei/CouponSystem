@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class CouponsDBDAO implements CouponsDAO {
     private Connection connection = null;
     MyDateUtil dateUtil = new MyDateUtil();
@@ -53,14 +52,10 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void updateCoupon(int couponID, Coupon coupon) {
+    public void updateCoupon(int couponID, Coupon coupon) throws CouponNotFoundException {
 
-        if (!isCouponExists(couponID)) try {
-            throw new CouponNotFoundException(couponID);
-        } catch (CouponNotFoundException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        if (!isCouponExists(couponID)) throw new CouponNotFoundException(couponID);
+
 
         try {
 
@@ -166,7 +161,7 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     public Coupon getOneCoupon(int couponID) throws CouponNotFoundException {
 
-        if(!isCouponExists(couponID)) throw new CouponNotFoundException(couponID);
+        if (!isCouponExists(couponID)) throw new CouponNotFoundException(couponID);
 
         try {
             Coupon coupon = null;
