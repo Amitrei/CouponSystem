@@ -3,6 +3,7 @@ package com.amitrei.dbdao;
 import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CouponsDAO;
 import com.amitrei.db.ConnectionPool;
+import com.amitrei.exceptions.CouponAlreadyExistsException;
 import com.amitrei.exceptions.CouponDateExpiredException;
 import com.amitrei.exceptions.CouponNotFoundException;
 import com.amitrei.utils.MyDateUtil;
@@ -22,6 +23,16 @@ public class CouponsDBDAO implements CouponsDAO {
         Connection connection2 = null;
         try {
             for (Coupon coupon : coupons) {
+
+                if (isCouponExists(coupon.getTitle(), coupon.getCompanyID())) {
+                    try {
+                        throw new CouponAlreadyExistsException(coupon.getTitle());
+                    } catch (CouponAlreadyExistsException e) {
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
+                }
+
                 connection2 = ConnectionPool.getInstance().getConnection();
                 String sql = "INSERT INTO `couponsystem`.`coupons` (`COMPANY_ID`, `CATEGORY_ID`,`TITLE`,`DESCRIPTION`,`START_DATE`,`END_DATE`,`AMOUNT`,`PRICE`,`IMAGE`) VALUES (?,?,?,?,?,?,?,?,?);";
                 PreparedStatement preparedStatement = connection2.prepareStatement(sql);
@@ -258,6 +269,34 @@ public class CouponsDBDAO implements CouponsDAO {
             String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`coupons` WHERE `ID`=? LIMIT 1)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, couponID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                isExists = resultSet.getInt(1);
+            }
+            return isExists > 0;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return false;
+
+    }
+
+    public boolean isCouponExists(String couponTitle, int companyID) {
+        try {
+            int isExists = -99;
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`coupons` WHERE `COMPANY_ID`=? AND `TITLE`=? LIMIT 1)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, companyID);
+            preparedStatement.setString(2, couponTitle);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 isExists = resultSet.getInt(1);
