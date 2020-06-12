@@ -1,7 +1,6 @@
 package com.amitrei.main;
 
-import com.amitrei.beans.Category;
-import com.amitrei.beans.Coupon;
+import com.amitrei.beans.Company;
 import com.amitrei.beans.Customer;
 import com.amitrei.db.ConnectionPool;
 
@@ -11,10 +10,7 @@ import com.amitrei.dbdao.CategoriesDBDAO;
 import com.amitrei.dbdao.CompaniesDBDAO;
 import com.amitrei.dbdao.CouponsDBDAO;
 import com.amitrei.dbdao.CustomersDBDAO;
-import com.amitrei.exceptions.CouponNotFoundException;
-import com.amitrei.facade.AdminFacade;
-import com.amitrei.facade.ClientFacade;
-import com.amitrei.utils.MyDateUtil;
+import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
 
 public class Test {
     public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException {
@@ -32,6 +28,8 @@ public class Test {
         Customer c1 = new Customer("Amixt", "Reix", "AmitRei@xgmail.com", "123x4");
         Customer c2 = new Customer("Amixaasaat", "Reaaix", "AmitReafsi@aaxgmail.com", "123asfasxaa4");
         Customer c3 = new Customer("Amixaasaat", "Reaaix", "xxxx@aaxgmail.com", "123asfasxaa4");
+        Company company = new Company("amixtcomp", "Amiaat1@gxmail.com", "1234");
+        company.setId(13);
 
         try {
             connectionPool.closeAllConnections();

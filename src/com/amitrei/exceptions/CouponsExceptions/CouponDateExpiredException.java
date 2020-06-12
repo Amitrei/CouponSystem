@@ -1,4 +1,4 @@
-package com.amitrei.exceptions;
+package com.amitrei.exceptions.CouponsExceptions;
 
 public class CouponDateExpiredException extends  Exception {
     public CouponDateExpiredException(int couponID) {

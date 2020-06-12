@@ -1,4 +1,4 @@
-package com.amitrei.exceptions;
+package com.amitrei.exceptions.CompanyExceptions;
 
 public class CompanyDoesNotExistsException extends Exception{
 

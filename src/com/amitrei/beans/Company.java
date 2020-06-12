@@ -1,11 +1,14 @@
 package com.amitrei.beans;
 
+import com.amitrei.dbdao.CompaniesDBDAO;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Company {
     private int id;
+
     private String name;
     private String email;
     private String password;
@@ -25,17 +28,17 @@ public class Company {
 
     }
 
-  // CTOR for CompaniesDBDAO - getAllCompanies
-    public Company(int id,String name, String email, String password) throws SQLException, InterruptedException {
+    // CTOR for CompaniesDBDAO - getAllCompanies
+
+    public Company(int id, String name, String email, String password) throws SQLException, InterruptedException {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.id=id;
+        this.id = id;
 
     }
 
     public int getId() {
-
         return id;
     }
 
@@ -71,6 +74,12 @@ public class Company {
     public void setCoupons(List<Coupon> coupons) {
         this.coupons = coupons;
     }
+
+    public void setId(int id) {
+
+            this.id = id;
+        }
+
 
     @Override
     public String toString() {

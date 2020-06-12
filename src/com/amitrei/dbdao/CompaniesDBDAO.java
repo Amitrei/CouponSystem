@@ -3,8 +3,8 @@ package com.amitrei.dbdao;
 import com.amitrei.beans.Company;
 import com.amitrei.dao.CompaniesDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CompanyAlreadyExistsException;
-import com.amitrei.exceptions.CompanyDoesNotExistsException;
+import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
+import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,14 +21,40 @@ public class CompaniesDBDAO implements CompaniesDAO {
      */
 
     @Override
-    public Boolean isCompanyExists(String email, String password) {
+    public Boolean isCompanyExistsByEmail(String email) {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL` =? AND `PASSWORD`=? LIMIT 1)";
+            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL` =? LIMIT 1)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                isExists = resultSet.getInt(1);
+            }
+            return isExists > 0;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return false;
+
+    }
+
+    public Boolean isCompanyExistsByName(String name) {
+        try {
+            int isExists = -99;
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `NAME` =? LIMIT 1)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 isExists = resultSet.getInt(1);
@@ -80,7 +106,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
     @Override
     public void addCompany(Company company) throws CompanyAlreadyExistsException {
 
-        if (isCompanyExists(company.getEmail(), company.getPassword())) throw new CompanyAlreadyExistsException();
+        if (isCompanyExistsByEmail(company.getEmail()) || isCompanyExistsByName(company.getName()))
+            throw new CompanyAlreadyExistsException();
 
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -106,19 +133,47 @@ public class CompaniesDBDAO implements CompaniesDAO {
         }
     }
 
+    /**
+     * Updating company id object variable
+     */
+    public void updateCompanyIDFromDB(Company company) {
+        Connection connection2 = null;
+        try {
+            connection2 = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT * FROM `couponsystem`.`companies`";
+            PreparedStatement preparedStatement = connection2.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                company.setId(resultSet.getInt(1));
+            }
+
+
+        } catch (InterruptedException | SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection2);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
 
     @Override
     public void updateCompany(int companyID, Company company) throws CompanyDoesNotExistsException {
+
         if (!isCompanyExists(companyID)) throw new CompanyDoesNotExistsException();
+
 
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "UPDATE `couponsystem`.`companies` SET `NAME` = ?, `EMAIL` = ?, `PASSWORD` = ? WHERE (`ID` = ?)";
+            String sql = "UPDATE `couponsystem`.`companies` SET  `EMAIL` = ?, `PASSWORD` = ? WHERE (`ID` = ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, company.getName());
-            preparedStatement.setString(2, company.getEmail());
-            preparedStatement.setString(3, company.getPassword());
-            preparedStatement.setInt(4, companyID);
+            preparedStatement.setString(1, company.getEmail());
+            preparedStatement.setString(2, company.getPassword());
+            preparedStatement.setInt(3, companyID);
             preparedStatement.executeUpdate();
             System.out.println("The update completed successfully.");
         } catch (InterruptedException | SQLException e) {
@@ -146,7 +201,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             preparedStatement.executeUpdate();
-            System.out.println("The company with the id: "+ companyID +" deleted successfully.");
+            System.out.println("The company with the id: " + companyID + " deleted successfully.");
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
         } finally {

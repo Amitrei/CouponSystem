@@ -3,8 +3,8 @@ package com.amitrei.dbdao;
 import com.amitrei.beans.Customer;
 import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CustomerAlreadyExistsException;
-import com.amitrei.exceptions.CustomerDoesNotExists;
+import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
+import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

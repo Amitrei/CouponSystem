@@ -3,7 +3,7 @@ package com.amitrei.dbdao;
 import com.amitrei.beans.Category;
 import com.amitrei.dao.CategoriesDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CategoryAlreadyExistsException;
+import com.amitrei.exceptions.CategoryExceptions.CategoryAlreadyExistsException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package com.amitrei.exceptions;
+package com.amitrei.exceptions.CustomerExceptions;
 
 public class CustomerAlreadyExistsException extends Exception {
     public CustomerAlreadyExistsException(String email) {

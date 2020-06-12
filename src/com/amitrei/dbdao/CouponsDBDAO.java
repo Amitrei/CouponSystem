@@ -3,9 +3,9 @@ package com.amitrei.dbdao;
 import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CouponsDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CouponAlreadyExistsException;
-import com.amitrei.exceptions.CouponDateExpiredException;
-import com.amitrei.exceptions.CouponNotFoundException;
+import com.amitrei.exceptions.CouponsExceptions.CouponAlreadyExistsException;
+import com.amitrei.exceptions.CouponsExceptions.CouponDateExpiredException;
+import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
 import com.amitrei.utils.MyDateUtil;
 
 import java.sql.*;

@@ -1,4 +1,4 @@
-package com.amitrei.exceptions;
+package com.amitrei.exceptions.CategoryExceptions;
 
 public class CategoryAlreadyExistsException extends  Exception {
 
