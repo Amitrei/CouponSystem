@@ -15,4 +15,5 @@ public interface CompaniesDAO {
     void deleteCompany(int companyID) throws CompanyDoesNotExistsException;
     List<Company> getAllCompanies();
     Company getOneCompany(int companyID) throws CompanyDoesNotExistsException;
+    int getCompanyIDFromDB(Company company);
 }

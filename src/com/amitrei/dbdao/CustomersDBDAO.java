@@ -1,5 +1,6 @@
 package com.amitrei.dbdao;
 
+import com.amitrei.beans.Company;
 import com.amitrei.beans.Customer;
 import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
@@ -25,15 +26,14 @@ public class CustomersDBDAO implements CustomersDAO {
      */
 
 
-    public Boolean isCustomerExists(String email, String password) {
+    public Boolean isCustomerExists(String email) {
 
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `EMAIL` =? AND `PASSWORD`=? LIMIT 1)";
+            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `EMAIL` =?  LIMIT 1)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 isExists = resultSet.getInt(1);
@@ -94,16 +94,15 @@ public class CustomersDBDAO implements CustomersDAO {
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
 
             // Iterate over all the added customers
-                    for(Customer customer : customers) {
-                    if (isCustomerExists(customer.getEmail(), customer.getPassword())) {
-                        try {
+            for (Customer customer : customers) {
+                if (isCustomerExists(customer.getEmail())) {
+                    try {
                         throw new CustomerAlreadyExistsException(customer.getEmail());
-                        }
-                        catch (CustomerAlreadyExistsException e) {
-                            System.out.println(e.getMessage());
-                            continue;
-                        }
+                    } catch (CustomerAlreadyExistsException e) {
+                        System.out.println(e.getMessage());
+                        continue;
                     }
+                }
 
 
                 preparedStatement.setString(1, customer.getFirstName());
@@ -111,7 +110,7 @@ public class CustomersDBDAO implements CustomersDAO {
                 preparedStatement.setString(3, customer.getEmail());
                 preparedStatement.setString(4, customer.getPassword());
                 preparedStatement.executeUpdate();
-                System.out.println("Customer " + customer.getEmail() + " created successfully");
+                System.out.println("Customer " + customer.getFirstName() + "  " + customer.getLastName() + " - " + customer.getEmail() + " created successfully");
 
 
             }
@@ -128,6 +127,33 @@ public class CustomersDBDAO implements CustomersDAO {
 
 
         }
+    }
+
+    public int getCustomerIDFromDB(Customer customer) {
+        Connection connection2 = null;
+        int result = -1;
+        try {
+            connection2 = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT * FROM `couponsystem`.`customers` WHERE `EMAIL`=?";
+            PreparedStatement preparedStatement = connection2.prepareStatement(sql);
+            preparedStatement.setString(1, customer.getEmail());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
+            return result;
+
+        } catch (InterruptedException | SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection2);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return result;
     }
 
     public void updateCustomer(int customerID, Customer customer) {
@@ -162,22 +188,42 @@ public class CustomersDBDAO implements CustomersDAO {
             String sql = "DELETE FROM `couponsystem`.`customers` WHERE ID=?";
 
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-           for(int customerId : customerID) {
+            for (int customerId : customerID) {
 
-                    if (!isCustomerExists(customerId)) {
-                        try {
+                if (!isCustomerExists(customerId)) {
+                    try {
                         throw new CustomerDoesNotExists(customerId);
-                        }
-                        catch (CustomerDoesNotExists e) {
-                            System.out.println(e.getMessage());
-                            continue;
-                        }
+                    } catch (CustomerDoesNotExists e) {
+                        System.out.println(e.getMessage());
+                        continue;
                     }
-
+                }
+                deleteCustomerPurchaseHistory(customerId);
                 preparedStatement.setInt(1, customerId);
                 preparedStatement.executeUpdate();
                 System.out.println("The customer with the id: " + customerId + " deleted successfully.");
             }
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection2);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection2 = null;
+        }
+    }
+
+    private void deleteCustomerPurchaseHistory(int customerID) {
+        Connection connection2 = null;
+
+        try {
+            connection2 = ConnectionPool.getInstance().getConnection();
+            String sql = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`CUSTOMER_ID` = ?)";
+            PreparedStatement preparedStatement = connection2.prepareStatement(sql);
+            preparedStatement.setInt(1, customerID);
+            preparedStatement.executeUpdate();
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
         } finally {

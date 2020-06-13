@@ -1,10 +1,12 @@
 package com.amitrei.dbdao;
 
 import com.amitrei.beans.Company;
+import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CompaniesDAO;
 import com.amitrei.db.ConnectionPool;
 import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
 import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
+import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -133,20 +135,20 @@ public class CompaniesDBDAO implements CompaniesDAO {
         }
     }
 
-    /**
-     * Updating company id object variable
-     */
-    public void updateCompanyIDFromDB(Company company) {
+
+    public int getCompanyIDFromDB(Company company) {
         Connection connection2 = null;
+        int result = -1;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`companies`";
+            String sql = "SELECT * FROM `couponsystem`.`companies` WHERE `EMAIL`=?";
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
+            preparedStatement.setString(1, company.getEmail());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                company.setId(resultSet.getInt(1));
+                result = resultSet.getInt(1);
             }
-
+            return result;
 
         } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
@@ -158,6 +160,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 System.out.println(e.getMessage());
             }
         }
+        return result;
     }
 
 
@@ -195,9 +198,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
         if (!isCompanyExists(companyID)) throw new CompanyDoesNotExistsException();
 
         try {
+            deleteCouponsOfCompany(companyID);
             connection = ConnectionPool.getInstance().getConnection();
             String sql = "DELETE FROM `couponsystem`.`companies` WHERE ID=?";
-
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             preparedStatement.executeUpdate();
@@ -214,6 +217,94 @@ public class CompaniesDBDAO implements CompaniesDAO {
         }
 
     }
+
+
+    private void deleteCouponsOfCompany(int companyID) {
+        Connection connection2 = null;
+
+        try {
+            deleteCustomerCouponHistory(companyID);
+            connection2 = ConnectionPool.getInstance().getConnection();
+            String sql = "DELETE FROM `couponsystem`.`coupons` WHERE (`COMPANY_ID` = ?)";
+            PreparedStatement preparedStatement = connection2.prepareStatement(sql);
+            preparedStatement.setInt(1, companyID);
+            preparedStatement.executeUpdate();
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection2);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection2 = null;
+        }
+
+    }
+
+    private void deleteCustomerCouponHistory(int couponCompanyID) {
+        Connection connection2 = null;
+
+        // Looping over an ArrayList of all coupons of the same company
+        try {
+            for (Coupon coupon : getAllCompaniesCoupons(couponCompanyID)) {
+                connection2 = ConnectionPool.getInstance().getConnection();
+                String sql = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`COUPON_ID` = ?)";
+                PreparedStatement preparedStatement = connection2.prepareStatement(sql);
+                preparedStatement.setInt(1, coupon.getId());
+                preparedStatement.executeUpdate();
+            }
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection2);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection2 = null;
+        }
+
+    }
+
+
+    public List<Coupon> getAllCompaniesCoupons(int companyID) {
+        List<Coupon> couponsList = new ArrayList<>();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT * FROM `couponsystem`.`coupons` WHERE (`COMPANY_ID`=?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, companyID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int getID = resultSet.getInt(1);
+                int getCompanyID = resultSet.getInt(2);
+                int getCategoryID = resultSet.getInt(3);
+                String getTitle = resultSet.getString(4);
+                String getDescription = resultSet.getString(5);
+                java.sql.Date getStartDate = resultSet.getDate(6);
+                java.sql.Date getEndDate = resultSet.getDate(7);
+                int getAmount = resultSet.getInt(8);
+                Double getPrice = resultSet.getDouble(9);
+                String getImage = resultSet.getString(10);
+                couponsList.add(new Coupon(getID, getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage));
+            }
+            return couponsList;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return null;
+
+    }
+
 
     @Override
     public List<Company> getAllCompanies() {

@@ -20,8 +20,12 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public void addCoupon(Coupon... coupons) {
+
         Connection connection2 = null;
+
         try {
+            connection2 = ConnectionPool.getInstance().getConnection();
+
             for (Coupon coupon : coupons) {
 
                 if (isCouponExists(coupon.getTitle(), coupon.getCompanyID())) {
@@ -33,7 +37,6 @@ public class CouponsDBDAO implements CouponsDAO {
                     }
                 }
 
-                connection2 = ConnectionPool.getInstance().getConnection();
                 String sql = "INSERT INTO `couponsystem`.`coupons` (`COMPANY_ID`, `CATEGORY_ID`,`TITLE`,`DESCRIPTION`,`START_DATE`,`END_DATE`,`AMOUNT`,`PRICE`,`IMAGE`) VALUES (?,?,?,?,?,?,?,?,?);";
                 PreparedStatement preparedStatement = connection2.prepareStatement(sql);
                 preparedStatement.setInt(1, coupon.getCompanyID());
@@ -53,11 +56,11 @@ public class CouponsDBDAO implements CouponsDAO {
         } finally {
             try {
                 ConnectionPool.getInstance().restoreConnection(connection2);
-                connection2 = null;
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
 
+            connection2 = null;
 
         }
     }
