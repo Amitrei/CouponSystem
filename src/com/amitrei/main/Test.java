@@ -14,12 +14,19 @@ import com.amitrei.dbdao.CouponsDBDAO;
 import com.amitrei.dbdao.CustomersDBDAO;
 import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
 import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
+import com.amitrei.exceptions.CouponsExceptions.CouponAlreadyExistsException;
 import com.amitrei.exceptions.CouponsExceptions.CouponDateExpiredException;
 import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
+import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
+import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
+import com.amitrei.facade.AdminFacade;
+import com.amitrei.facade.ClientFacade;
+import com.amitrei.facade.CompanyFacade;
 import com.amitrei.utils.MyDateUtil;
 
 public class Test {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException, CompanyAlreadyExistsException {
+
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException, CompanyAlreadyExistsException, CompanyDoesNotExistsException, CouponDateExpiredException, CouponNotFoundException, CustomerAlreadyExistsException, CustomerDoesNotExists, CouponAlreadyExistsException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         ConnectionPool connectionPool = ConnectionPool.getInstance();
 //        DBManager.createTable(DBCreateQueries.CREATE_CUSTOMERS_TABLE);
@@ -31,11 +38,16 @@ public class Test {
         CompaniesDBDAO cd1 = new CompaniesDBDAO();
         CategoriesDBDAO cg = new CategoriesDBDAO();
         CustomersDBDAO cus = new CustomersDBDAO();
-        Company company = new Company("amixtcomp", "Amiaat1@gxmail.com", "1234");
+        Company company = new Company("xxxx", "45555", "555555335");
+        Company company2 = new Company("bbbb", "45555", "555555335");
         MyDateUtil myd = new MyDateUtil();
-        Coupon coupon = new Coupon(21, Category.Electricity,"BESTxxxxxx","myBSTxx",myd.currentDate(),myd.expiredDate(10),100,99.9,"IMAGE.png");
-        Customer customer = new Customer("Amit","rei","a@xx0gamil.com","1234");
-        cus.deleteCustomer(56);
+        Coupon coupon = new Coupon(39, Category.Electricity, "ffffff", "aaa", myd.currentDate(), myd.expiredDate(20), 100, 99.9, "IMAGE.png");
+        Customer customer = new Customer("amit", "cohen", "axx@gm.com", "12xxxx34");
+        CompanyFacade cf = new CompanyFacade();
+        cf.setCompanyID(39);
+        Company myComp =cf.getCompanyDetails();
+        System.out.println(myComp);
+
         try {
             connectionPool.closeAllConnections();
         } catch (InterruptedException e) {

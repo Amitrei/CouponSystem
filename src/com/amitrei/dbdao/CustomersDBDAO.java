@@ -83,28 +83,13 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
-    public void addCustomer(Customer... customers) {
-        /**
-         * Making a local connection to prevent NullPointerException because of the isCustomerExists method and the finally block.
-         */
+    public void addCustomer(Customer customer) {
+
         Connection connection2 = null;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
             String sql = "INSERT INTO `couponsystem`.`customers` (`FIRST_NAME`, `LAST_NAME`,`EMAIL`,`PASSWORD`) VALUES (?,?,?,?);";
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-
-            // Iterate over all the added customers
-            for (Customer customer : customers) {
-                if (isCustomerExists(customer.getEmail())) {
-                    try {
-                        throw new CustomerAlreadyExistsException(customer.getEmail());
-                    } catch (CustomerAlreadyExistsException e) {
-                        System.out.println(e.getMessage());
-                        continue;
-                    }
-                }
-
-
                 preparedStatement.setString(1, customer.getFirstName());
                 preparedStatement.setString(2, customer.getLastName());
                 preparedStatement.setString(3, customer.getEmail());
@@ -113,7 +98,7 @@ public class CustomersDBDAO implements CustomersDAO {
                 System.out.println("Customer " + customer.getFirstName() + "  " + customer.getLastName() + " - " + customer.getEmail() + " created successfully");
 
 
-            }
+
 
 
         } catch (InterruptedException | SQLException e) {
@@ -129,6 +114,8 @@ public class CustomersDBDAO implements CustomersDAO {
         }
     }
 
+
+    // Getting the id by searching email
     public int getCustomerIDFromDB(Customer customer) {
         Connection connection2 = null;
         int result = -1;
@@ -181,28 +168,17 @@ public class CustomersDBDAO implements CustomersDAO {
         }
     }
 
-    public void deleteCustomer(int... customerID) {
+    public void deleteCustomer(int customerID) {
         Connection connection2 = null;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
             String sql = "DELETE FROM `couponsystem`.`customers` WHERE ID=?";
 
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-            for (int customerId : customerID) {
-
-                if (!isCustomerExists(customerId)) {
-                    try {
-                        throw new CustomerDoesNotExists(customerId);
-                    } catch (CustomerDoesNotExists e) {
-                        System.out.println(e.getMessage());
-                        continue;
-                    }
-                }
-                deleteCustomerPurchaseHistory(customerId);
-                preparedStatement.setInt(1, customerId);
+                preparedStatement.setInt(1, customerID);
                 preparedStatement.executeUpdate();
-                System.out.println("The customer with the id: " + customerId + " deleted successfully.");
-            }
+                System.out.println("The customer with the id: " + customerID + " deleted successfully.");
+
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
         } finally {

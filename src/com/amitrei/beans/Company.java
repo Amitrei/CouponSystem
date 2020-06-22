@@ -8,7 +8,6 @@ import java.util.List;
 
 public class Company {
     private int id;
-
     private String name;
     private String email;
     private String password;
@@ -23,6 +22,13 @@ public class Company {
 
     public Company(String name, String email, String password) throws SQLException, InterruptedException {
         this.name = name;
+        this.email = email;
+        this.password = password;
+
+    }
+
+    // CTOR for updateCompany
+    public Company(String email, String password) throws SQLException, InterruptedException {
         this.email = email;
         this.password = password;
 
@@ -77,8 +83,8 @@ public class Company {
 
     public void setId(int id) {
 
-            this.id = id;
-        }
+        this.id = id;
+    }
 
 
     @Override

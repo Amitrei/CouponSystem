@@ -8,12 +8,27 @@ import java.util.List;
 
 public interface CouponsDAO {
     void addCoupon(Coupon... coupon);
-    void updateCoupon(int couponID,Coupon coupon) throws CouponNotFoundException;
-    void deleteCoupon (int... couponID);
+
+    void updateCoupon(int couponID, Coupon coupon) throws CouponNotFoundException;
+
+    void deleteCoupon(int... couponID);
+
     List<Coupon> getAllCoupons();
+
     Coupon getOneCoupon(int couponID) throws CouponNotFoundException;
-    void addCouponPurchase(int customerID,int couponID) throws CouponNotFoundException, CouponDateExpiredException;
-    void deleteCouponPurchase(int customerID,int couponID);
+
+    void addCouponPurchase(int customerID, int couponID) throws CouponNotFoundException, CouponDateExpiredException;
+
+    void deleteCouponPurchase(int customerID, int couponID);
+
     boolean isCouponExists(int couponID);
+
     boolean isCouponExists(String couponTitle, int companyID);
+
+    public List<Coupon> getAllCouponsOfCompany(int companyID);
+
+    void deleteCouponsPurchasesOfCompany(int couponCompanyID);
+
+    int getCouponIDFromDB(Coupon coupon);
+    void deleteCouponPurchase(int couponID);
 }

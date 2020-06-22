@@ -4,9 +4,7 @@ import com.amitrei.beans.Company;
 import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CompaniesDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
 import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
-import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -77,7 +75,35 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
     }
 
-    public Boolean isCompanyExists(int companyID) {
+    @Override
+    public Boolean isCompanyExists(String companyEmail, String companyPassword) {
+        try {
+            int isExists = -99;
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL`=? AND `PASSWORD`=? LIMIT 1)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, companyEmail);
+            preparedStatement.setString(2, companyPassword);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                isExists = resultSet.getInt(1);
+            }
+            return isExists > 0;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return false;
+    }
+
+    public Boolean isCompanyExistsById(int companyID) {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
@@ -106,10 +132,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 
     @Override
-    public void addCompany(Company company) throws CompanyAlreadyExistsException {
+    public void addCompany(Company company) {
 
-        if (isCompanyExistsByEmail(company.getEmail()) || isCompanyExistsByName(company.getName()))
-            throw new CompanyAlreadyExistsException();
 
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -119,6 +143,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             preparedStatement.setString(2, company.getEmail());
             preparedStatement.setString(3, company.getPassword());
             preparedStatement.executeUpdate();
+            company.setId(getCompanyIDFromDB(company));
             System.out.println("The company was added successfully.");
 
         } catch (InterruptedException | SQLException e) {
@@ -141,9 +166,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
         int result = -1;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`companies` WHERE `EMAIL`=?";
+            String sql = "SELECT * FROM `couponsystem`.`companies` WHERE `NAME`=?";
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-            preparedStatement.setString(1, company.getEmail());
+            preparedStatement.setString(1, company.getName());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result = resultSet.getInt(1);
@@ -165,18 +190,17 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 
     @Override
-    public void updateCompany(int companyID, Company company) throws CompanyDoesNotExistsException {
-
-        if (!isCompanyExists(companyID)) throw new CompanyDoesNotExistsException();
+    public void updateCompany(Company company) {
 
 
         try {
+
             connection = ConnectionPool.getInstance().getConnection();
             String sql = "UPDATE `couponsystem`.`companies` SET  `EMAIL` = ?, `PASSWORD` = ? WHERE (`ID` = ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, company.getEmail());
             preparedStatement.setString(2, company.getPassword());
-            preparedStatement.setInt(3, companyID);
+            preparedStatement.setInt(3, getCompanyIDFromDB(company));
             preparedStatement.executeUpdate();
             System.out.println("The update completed successfully.");
         } catch (InterruptedException | SQLException e) {
@@ -194,11 +218,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public void deleteCompany(int companyID) throws CompanyDoesNotExistsException {
-        if (!isCompanyExists(companyID)) throw new CompanyDoesNotExistsException();
+    public void deleteCompany(int companyID) {
+
 
         try {
-            deleteCouponsOfCompany(companyID);
             connection = ConnectionPool.getInstance().getConnection();
             String sql = "DELETE FROM `couponsystem`.`companies` WHERE ID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -215,93 +238,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
             }
             connection = null;
         }
-
-    }
-
-
-    private void deleteCouponsOfCompany(int companyID) {
-        Connection connection2 = null;
-
-        try {
-            deleteCustomerCouponHistory(companyID);
-            connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "DELETE FROM `couponsystem`.`coupons` WHERE (`COMPANY_ID` = ?)";
-            PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-            preparedStatement.setInt(1, companyID);
-            preparedStatement.executeUpdate();
-        } catch (InterruptedException | SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                ConnectionPool.getInstance().restoreConnection(connection2);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            connection2 = null;
-        }
-
-    }
-
-    private void deleteCustomerCouponHistory(int couponCompanyID) {
-        Connection connection2 = null;
-
-        // Looping over an ArrayList of all coupons of the same company
-        try {
-            for (Coupon coupon : getAllCompaniesCoupons(couponCompanyID)) {
-                connection2 = ConnectionPool.getInstance().getConnection();
-                String sql = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`COUPON_ID` = ?)";
-                PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-                preparedStatement.setInt(1, coupon.getId());
-                preparedStatement.executeUpdate();
-            }
-        } catch (InterruptedException | SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                ConnectionPool.getInstance().restoreConnection(connection2);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            connection2 = null;
-        }
-
-    }
-
-
-    public List<Coupon> getAllCompaniesCoupons(int companyID) {
-        List<Coupon> couponsList = new ArrayList<>();
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`coupons` WHERE (`COMPANY_ID`=?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, companyID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                int getID = resultSet.getInt(1);
-                int getCompanyID = resultSet.getInt(2);
-                int getCategoryID = resultSet.getInt(3);
-                String getTitle = resultSet.getString(4);
-                String getDescription = resultSet.getString(5);
-                java.sql.Date getStartDate = resultSet.getDate(6);
-                java.sql.Date getEndDate = resultSet.getDate(7);
-                int getAmount = resultSet.getInt(8);
-                Double getPrice = resultSet.getDouble(9);
-                String getImage = resultSet.getString(10);
-                couponsList.add(new Coupon(getID, getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage));
-            }
-            return couponsList;
-
-        } catch (InterruptedException | SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                ConnectionPool.getInstance().restoreConnection(connection);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            connection = null;
-        }
-        return null;
 
     }
 
@@ -340,7 +276,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
     @Override
     public Company getOneCompany(int companyID) throws CompanyDoesNotExistsException {
-        if (!isCompanyExists(companyID)) throw new CompanyDoesNotExistsException();
 
         Company company = null;
         try {
@@ -370,4 +305,36 @@ public class CompaniesDBDAO implements CompaniesDAO {
         }
         return company;
     }
-}
+
+    @Override
+    public Company getOneCompany(String companyEmail) throws CompanyDoesNotExistsException {
+        Company company = null;
+
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT * FROM `couponsystem`.`companies` WHERE `EMAIL`=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, companyEmail);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int getID = resultSet.getInt(1);
+                String getName = resultSet.getString(2);
+                String getEmail = resultSet.getString(3);
+                String getPassword = resultSet.getString(4);
+                company = new Company(getID, getName, getEmail, getPassword);
+
+            }
+            return company;
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return company;
+    }    }
+

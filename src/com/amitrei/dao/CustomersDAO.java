@@ -8,9 +8,9 @@ import java.util.List;
 public interface CustomersDAO {
     Boolean isCustomerExists(String email);
     Boolean isCustomerExists(int customerID);
-    void addCustomer(Customer... customer) throws CustomerAlreadyExistsException;
+    void addCustomer(Customer customer) throws CustomerAlreadyExistsException;
     void updateCustomer(int customerID,Customer customer);
-    void deleteCustomer(int... customerID);
+    void deleteCustomer(int customerID);
     List<Customer> getAllCustomers();
     Customer getOneCustomer(int customerID);
     int getCustomerIDFromDB(Customer customer);
