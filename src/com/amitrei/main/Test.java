@@ -17,16 +17,19 @@ import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
 import com.amitrei.exceptions.CouponsExceptions.CouponAlreadyExistsException;
 import com.amitrei.exceptions.CouponsExceptions.CouponDateExpiredException;
 import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
+import com.amitrei.exceptions.CouponsExceptions.CouponOutOfStockException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
+import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyPurchasedCouponException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
 import com.amitrei.facade.AdminFacade;
 import com.amitrei.facade.ClientFacade;
 import com.amitrei.facade.CompanyFacade;
+import com.amitrei.facade.CustomerFacade;
 import com.amitrei.utils.MyDateUtil;
 
 public class Test {
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException, CompanyAlreadyExistsException, CompanyDoesNotExistsException, CouponDateExpiredException, CouponNotFoundException, CustomerAlreadyExistsException, CustomerDoesNotExists, CouponAlreadyExistsException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException, CompanyAlreadyExistsException, CompanyDoesNotExistsException, CouponDateExpiredException, CouponNotFoundException, CustomerAlreadyExistsException, CustomerDoesNotExists, CouponAlreadyExistsException, CustomerAlreadyPurchasedCouponException, CouponOutOfStockException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         ConnectionPool connectionPool = ConnectionPool.getInstance();
 //        DBManager.createTable(DBCreateQueries.CREATE_CUSTOMERS_TABLE);
@@ -43,10 +46,11 @@ public class Test {
         MyDateUtil myd = new MyDateUtil();
         Coupon coupon = new Coupon(39, Category.Electricity, "ffffff", "aaa", myd.currentDate(), myd.expiredDate(20), 100, 99.9, "IMAGE.png");
         Customer customer = new Customer("amit", "cohen", "axx@gm.com", "12xxxx34");
-        CompanyFacade cf = new CompanyFacade();
-        cf.setCompanyID(39);
-        Company myComp =cf.getCompanyDetails();
-        System.out.println(myComp);
+        CustomerFacade cf = new CustomerFacade();
+        cf.login("amit@gm.com","1234");
+        cf.purchaseCoupon(cd.getOneCoupon(42));
+
+
 
         try {
             connectionPool.closeAllConnections();

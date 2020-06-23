@@ -54,6 +54,35 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
+    @Override
+    public Boolean isCustomerExists(String email, String password) {
+
+        try {
+            int isExists = -99;
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `EMAIL` =? AND `PASSWORD`=?  LIMIT 1)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                isExists = resultSet.getInt(1);
+            }
+            return isExists > 0;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return false;
+
+    }
 
     public Boolean isCustomerExists(int customerID) {
 
@@ -90,15 +119,12 @@ public class CustomersDBDAO implements CustomersDAO {
             connection2 = ConnectionPool.getInstance().getConnection();
             String sql = "INSERT INTO `couponsystem`.`customers` (`FIRST_NAME`, `LAST_NAME`,`EMAIL`,`PASSWORD`) VALUES (?,?,?,?);";
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-                preparedStatement.setString(1, customer.getFirstName());
-                preparedStatement.setString(2, customer.getLastName());
-                preparedStatement.setString(3, customer.getEmail());
-                preparedStatement.setString(4, customer.getPassword());
-                preparedStatement.executeUpdate();
-                System.out.println("Customer " + customer.getFirstName() + "  " + customer.getLastName() + " - " + customer.getEmail() + " created successfully");
-
-
-
+            preparedStatement.setString(1, customer.getFirstName());
+            preparedStatement.setString(2, customer.getLastName());
+            preparedStatement.setString(3, customer.getEmail());
+            preparedStatement.setString(4, customer.getPassword());
+            preparedStatement.executeUpdate();
+            System.out.println("Customer " + customer.getFirstName() + "  " + customer.getLastName() + " - " + customer.getEmail() + " created successfully");
 
 
         } catch (InterruptedException | SQLException e) {
@@ -175,9 +201,9 @@ public class CustomersDBDAO implements CustomersDAO {
             String sql = "DELETE FROM `couponsystem`.`customers` WHERE ID=?";
 
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
-                preparedStatement.setInt(1, customerID);
-                preparedStatement.executeUpdate();
-                System.out.println("The customer with the id: " + customerID + " deleted successfully.");
+            preparedStatement.setInt(1, customerID);
+            preparedStatement.executeUpdate();
+            System.out.println("The customer with the id: " + customerID + " deleted successfully.");
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -274,6 +300,67 @@ public class CustomersDBDAO implements CustomersDAO {
             connection = null;
         }
         return customer;
+
+    }
+
+    public Customer getOneCustomer(String email) {
+        Customer customer = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT * FROM `couponsystem`.`customers` WHERE EMAIL=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int getID = resultSet.getInt(1);
+                String getFirstName = resultSet.getString(2);
+                String getLastName = resultSet.getString(3);
+                String getEmail = resultSet.getString(4);
+                String getPassword = resultSet.getString(5);
+                customer = new Customer(getID, getFirstName, getLastName, getEmail, getPassword);
+
+            }
+            return customer;
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return customer;
+
+    }
+
+    @Override
+    public boolean isCustomerHaveCoupon(int customerID, int couponID) {
+        try {
+            int isExists = -99;
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers_vs_coupons` WHERE `CUSTOMER_ID` =? AND `COUPON_ID`=?  LIMIT 1)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, customerID);
+            preparedStatement.setInt(2, couponID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                isExists = resultSet.getInt(1);
+            }
+            return isExists > 0;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return false;
 
     }
 }
