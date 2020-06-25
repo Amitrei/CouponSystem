@@ -1,5 +1,8 @@
 package com.amitrei.main;
 
+import com.amitrei.dailyjob.CouponExpirationDailyJob;
+import com.amitrei.login.ClientType;
+import com.amitrei.login.LoginManager;
 import com.amitrei.beans.Category;
 import com.amitrei.beans.Company;
 import com.amitrei.beans.Coupon;
@@ -22,8 +25,6 @@ import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyPurchasedCouponException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
 import com.amitrei.facade.AdminFacade;
-import com.amitrei.facade.ClientFacade;
-import com.amitrei.facade.CompanyFacade;
 import com.amitrei.facade.CustomerFacade;
 import com.amitrei.utils.MyDateUtil;
 
@@ -44,19 +45,25 @@ public class Test {
         Company company = new Company("xxxx", "45555", "555555335");
         Company company2 = new Company("bbbb", "45555", "555555335");
         MyDateUtil myd = new MyDateUtil();
-        Coupon coupon = new Coupon(39, Category.Electricity, "ffffff", "aaa", myd.currentDate(), myd.expiredDate(20), 100, 99.9, "IMAGE.png");
+        Coupon coupon = new Coupon(39, Category.Electricity, "xxcvzxv", "zxczx", myd.currentDate(), myd.expiredDate(20), 100, 99.9, "IMAGE.png");
         Customer customer = new Customer("amit", "cohen", "axx@gm.com", "12xxxx34");
         CustomerFacade cf = new CustomerFacade();
-        cf.login("amit@gm.com","1234");
-        cf.purchaseCoupon(cd.getOneCoupon(42));
+        AdminFacade adminFacade = new AdminFacade();
+        LoginManager loginManager = LoginManager.getInstance();
+        var loggedIn = loginManager.login("admin@admin.com", "admin", ClientType.Administrator);
+        System.out.println(cd.getAllCoupons());
+
+        CouponExpirationDailyJob Runner = new CouponExpirationDailyJob();
+        Thread t1 = new Thread(Runner);
 
 
 
-        try {
-            connectionPool.closeAllConnections();
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
+            try {
+                connectionPool.closeAllConnections();
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+
 
 
     }

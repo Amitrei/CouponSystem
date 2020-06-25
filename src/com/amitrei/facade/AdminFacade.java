@@ -62,6 +62,9 @@ public class AdminFacade extends ClientFacade {
         customersDAO.addCustomer(customer);
     }
 
+
+// ****** NEED TO CHANGE ADD CUSTOMER TO ADD THE ID INTO THE CUSTOMER OBJECTS **************
+
     public void updateCustomer(Customer customer) throws CustomerDoesNotExists {
         if (!customersDAO.isCustomerExists(customer.getEmail())) throw new CustomerDoesNotExists();
         customersDAO.updateCustomer(customersDAO.getCustomerIDFromDB(customer), customer);

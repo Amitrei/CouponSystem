@@ -1,6 +1,8 @@
 package com.amitrei.dbdao;
 
+import com.amitrei.beans.Category;
 import com.amitrei.beans.Company;
+import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
 import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
@@ -194,6 +196,7 @@ public class CustomersDBDAO implements CustomersDAO {
         }
     }
 
+
     public void deleteCustomer(int customerID) {
         Connection connection2 = null;
         try {
@@ -336,7 +339,77 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
     @Override
-    public boolean isCustomerHaveCoupon(int customerID, int couponID) {
+    public List<Coupon> getCustomerCoupons(int customerID) {
+
+        List<Coupon> customerAllCoupons = new ArrayList<>();
+        Connection connection2 = null;
+        try {
+            connection2 = ConnectionPool.getInstance().getConnection();
+
+            for (int couponID : GetCustomerCouponPurchases(customerID)) {
+                String sql = "SELECT * FROM `couponsystem`.`coupons` WHERE `ID`=?";
+                PreparedStatement preparedStatement = connection2.prepareStatement(sql);
+                preparedStatement.setInt(1, couponID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    int getID = resultSet.getInt(1);
+                    int getCompanyID = resultSet.getInt(2);
+                    int getCategoryID = resultSet.getInt(3);
+                    String getTitle = resultSet.getString(4);
+                    String getDescription = resultSet.getString(5);
+                    java.sql.Date getStartDate = resultSet.getDate(6);
+                    java.sql.Date getEndDate = resultSet.getDate(7);
+                    int getAmount = resultSet.getInt(8);
+                    Double getPrice = resultSet.getDouble(9);
+                    String getImage = resultSet.getString(10);
+                    Coupon customerCoupon = new Coupon(getID, getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                    customerAllCoupons.add(customerCoupon);
+                }
+
+
+            }
+            return customerAllCoupons;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection2);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection2 = null;
+        }
+        return null;
+
+
+    }
+
+    @Override
+    public List<Coupon> getCustomerCoupons(int customerID, Category category) {
+        List<Coupon> customerCoupons = new ArrayList<>();
+        for (Coupon coupon : getCustomerCoupons(customerID)) {
+            if (coupon.getCategory().equals(category))
+                customerCoupons.add(coupon);
+        }
+
+        return customerCoupons;
+    }
+
+    @Override
+    public List<Coupon> getCustomerCoupons(int customerID, double maxPrice) {
+        List<Coupon> customerCoupons = new ArrayList<>();
+        for (Coupon coupon : getCustomerCoupons(customerID)) {
+            if (coupon.getPrice() <= maxPrice)
+                customerCoupons.add(coupon);
+        }
+
+        return customerCoupons;
+    }
+
+    @Override
+    public boolean isCustomerAlreadyHaveCoupon(int customerID, int couponID) {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
@@ -363,4 +436,42 @@ public class CustomersDBDAO implements CustomersDAO {
         return false;
 
     }
+
+    @Override
+    public List<Integer> GetCustomerCouponPurchases(int customerID) {
+        List<Integer> customerPurchasesList = new ArrayList<>();
+        try {
+
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "SELECT * FROM `couponsystem`.`customers_vs_coupons` WHERE `CUSTOMER_ID`=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, customerID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+
+                customerPurchasesList.add(resultSet.getInt(2));
+
+            }
+
+            return customerPurchasesList;
+
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+
+
+        return null;
+
+    }
+
 }
+
+

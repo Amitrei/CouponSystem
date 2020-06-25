@@ -198,7 +198,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 String getImage = resultSet.getString(10);
                 couponsList.add(new Coupon(getID, getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage));
             }
-            return couponsList;
+
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -210,8 +210,7 @@ public class CouponsDBDAO implements CouponsDAO {
             }
             connection = null;
         }
-        return null;
-
+        return couponsList;
     }
 
     @Override
@@ -312,7 +311,7 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, couponID);
             preparedStatement.executeUpdate();
-            System.out.println("Purchase of coupon id:" + couponID +  " successfully deleted");
+            System.out.println("Purchase of coupon id:" + couponID + " successfully deleted");
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());

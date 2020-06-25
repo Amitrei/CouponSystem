@@ -1,5 +1,7 @@
 package com.amitrei.dao;
 
+import com.amitrei.beans.Category;
+import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
 import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
 
@@ -15,7 +17,11 @@ public interface CustomersDAO {
     List<Customer> getAllCustomers();
     Customer getOneCustomer(int customerID);
     Customer getOneCustomer(String email);
-    boolean isCustomerHaveCoupon(int customerID,int couponID);
+    List<Coupon> getCustomerCoupons(int CustomerID);
+    List<Coupon> getCustomerCoupons(int customerID,Category category);
+    List<Coupon> getCustomerCoupons(int customerID,double maxPrice);
+    boolean isCustomerAlreadyHaveCoupon(int customerID, int couponID);
     int getCustomerIDFromDB(Customer customer);
+    List<Integer> GetCustomerCouponPurchases(int customerID);
 
 }

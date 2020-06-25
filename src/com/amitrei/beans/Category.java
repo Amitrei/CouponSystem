@@ -1,5 +1,5 @@
 package com.amitrei.beans;
 
 public enum Category {
-    Food,Electricity,Resturant,Vacation,WINTER,SPORT;
+    FOOD,Electricity,Resturant,Vacation,WINTER,SPORT;
 }
