@@ -22,6 +22,7 @@ public interface CustomersDAO {
     List<Coupon> getCustomerCoupons(int customerID,double maxPrice);
     boolean isCustomerAlreadyHaveCoupon(int customerID, int couponID);
     int getCustomerIDFromDB(Customer customer);
+    void deleteCustomerPurchaseHistory(int customerID);
     List<Integer> GetCustomerCouponPurchases(int customerID);
 
 }

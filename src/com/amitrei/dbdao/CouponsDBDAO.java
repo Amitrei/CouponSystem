@@ -39,7 +39,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 preparedStatement.setDouble(8, coupon.getPrice());
                 preparedStatement.setString(9, coupon.getImage());
                 preparedStatement.executeUpdate();
-                System.out.println("The coupon title " + coupon.getTitle() + " - " + coupon.getDescription() + " was added successfully.");
+
             }
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -73,7 +73,7 @@ public class CouponsDBDAO implements CouponsDAO {
             preparedStatement.setString(7, coupon.getImage());
             preparedStatement.setInt(8, couponID);
             preparedStatement.executeUpdate();
-            System.out.println("The update completed successfully.");
+
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -162,7 +162,6 @@ public class CouponsDBDAO implements CouponsDAO {
 
                 preparedStatement.setInt(1, couponId);
                 preparedStatement.executeUpdate();
-                System.out.println("The coupon with the id: " + couponId + " deleted successfully.");
             }
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -263,7 +262,6 @@ public class CouponsDBDAO implements CouponsDAO {
             preparedStatement.setInt(1, customerID);
             preparedStatement.setInt(2, couponID);
             preparedStatement.executeUpdate();
-            System.out.println("Coupon purchased successfully");
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -287,7 +285,6 @@ public class CouponsDBDAO implements CouponsDAO {
             preparedStatement.setInt(1, customerID);
             preparedStatement.setInt(2, couponID);
             preparedStatement.executeUpdate();
-            System.out.println("Purchased of coupon id:" + couponID + " of customerID " + customerID + " successfully deleted");
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -311,7 +308,6 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, couponID);
             preparedStatement.executeUpdate();
-            System.out.println("Purchase of coupon id:" + couponID + " successfully deleted");
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());

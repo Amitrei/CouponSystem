@@ -143,8 +143,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
             preparedStatement.setString(2, company.getEmail());
             preparedStatement.setString(3, company.getPassword());
             preparedStatement.executeUpdate();
-            company.setId(getCompanyIDFromDB(company));
-            System.out.println("The company was added successfully.");
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -200,9 +198,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, company.getEmail());
             preparedStatement.setString(2, company.getPassword());
-            preparedStatement.setInt(3, getCompanyIDFromDB(company));
+            preparedStatement.setInt(3, company.getId());
             preparedStatement.executeUpdate();
-            System.out.println("The update completed successfully.");
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -227,7 +224,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             preparedStatement.executeUpdate();
-            System.out.println("The company with the id: " + companyID + " deleted successfully.");
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
         } finally {

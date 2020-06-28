@@ -82,19 +82,22 @@ public class Company {
     }
 
     public void setId(int id) {
-
-        this.id = id;
+        if (this.id == 0) {
+            this.id = id;
+        } else {
+            System.out.println("Cannot change company ID");
+        }
     }
 
 
     @Override
     public String toString() {
-        return "Company{" +
-                "id=" + id +
+        return " Company" +
+                " id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +
-                '}';
+                " ";
     }
 }

@@ -126,7 +126,6 @@ public class CustomersDBDAO implements CustomersDAO {
             preparedStatement.setString(3, customer.getEmail());
             preparedStatement.setString(4, customer.getPassword());
             preparedStatement.executeUpdate();
-            System.out.println("Customer " + customer.getFirstName() + "  " + customer.getLastName() + " - " + customer.getEmail() + " created successfully");
 
 
         } catch (InterruptedException | SQLException e) {
@@ -183,7 +182,6 @@ public class CustomersDBDAO implements CustomersDAO {
             preparedStatement.setString(4, customer.getPassword());
             preparedStatement.setInt(5, customerID);
             preparedStatement.executeUpdate();
-            System.out.println("The update completed successfully.");
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -206,7 +204,6 @@ public class CustomersDBDAO implements CustomersDAO {
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             preparedStatement.executeUpdate();
-            System.out.println("The customer with the id: " + customerID + " deleted successfully.");
 
         } catch (InterruptedException | SQLException e) {
             System.out.println(e.getMessage());
@@ -220,7 +217,7 @@ public class CustomersDBDAO implements CustomersDAO {
         }
     }
 
-    private void deleteCustomerPurchaseHistory(int customerID) {
+    public void deleteCustomerPurchaseHistory(int customerID) {
         Connection connection2 = null;
 
         try {

@@ -32,37 +32,28 @@ public class Test {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException, CompanyAlreadyExistsException, CompanyDoesNotExistsException, CouponDateExpiredException, CouponNotFoundException, CustomerAlreadyExistsException, CustomerDoesNotExists, CouponAlreadyExistsException, CustomerAlreadyPurchasedCouponException, CouponOutOfStockException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        ConnectionPool connectionPool = ConnectionPool.getInstance();
-//        DBManager.createTable(DBCreateQueries.CREATE_CUSTOMERS_TABLE);
-//        DBManager.createTable(DBCreateQueries.CREATE_COMPANIES_TABLE);
-//        DBManager.createTable(DBCreateQueries.CREATE_CATEGORIES_TABLE);
-//        DBManager.createTable(DBCreateQueries.CREATE_COUPONS_TABLE);
-//        DBManager.createTable(DBCreateQueries.CREATE_CUSTOMERS_VS_COUPONS_TABLE);
-        CouponsDBDAO cd = new CouponsDBDAO();
-        CompaniesDBDAO cd1 = new CompaniesDBDAO();
-        CategoriesDBDAO cg = new CategoriesDBDAO();
-        CustomersDBDAO cus = new CustomersDBDAO();
-        Company company = new Company("xxxx", "45555", "555555335");
-        Company company2 = new Company("bbbb", "45555", "555555335");
-        MyDateUtil myd = new MyDateUtil();
-        Coupon coupon = new Coupon(39, Category.Electricity, "xxcvzxv", "zxczx", myd.currentDate(), myd.expiredDate(20), 100, 99.9, "IMAGE.png");
-        Customer customer = new Customer("amit", "cohen", "axx@gm.com", "12xxxx34");
-        CustomerFacade cf = new CustomerFacade();
-        AdminFacade adminFacade = new AdminFacade();
-        LoginManager loginManager = LoginManager.getInstance();
-        var loggedIn = loginManager.login("admin@admin.com", "admin", ClientType.Administrator);
-        System.out.println(cd.getAllCoupons());
+//        ConnectionPool connectionPool = ConnectionPool.getInstance();
+//////        DBManager.createTable(DBCreateQueries.CREATE_CUSTOMERS_TABLE);
+//////        DBManager.createTable(DBCreateQueries.CREATE_COMPANIES_TABLE);
+//////        DBManager.createTable(DBCreateQueries.CREATE_CATEGORIES_TABLE);
+//////        DBManager.createTable(DBCreateQueries.CREATE_COUPONS_TABLE);
+//////        DBManager.createTable(DBCreateQueries.CREATE_CUSTOMERS_VS_COUPONS_TABLE);
+//        CouponsDBDAO cd = new CouponsDBDAO();
+//        CompaniesDBDAO cd1 = new CompaniesDBDAO();
+//        CategoriesDBDAO cg = new CategoriesDBDAO();
+//        CustomersDBDAO cus = new CustomersDBDAO();
+//        Company company = new Company("xxxx", "45555", "555555335");
+//        Company company2 = new Company("bbbb", "45555", "555555335");
+//        MyDateUtil myd = new MyDateUtil();
+//        Coupon coupon = new Coupon(39, Category.Electricity, "xxcvzxv", "zxczx", myd.currentDate(), myd.expiredDate(20), 100, 99.9, "IMAGE.png");
+        FullTest fullTest = new FullTest();
+        fullTest.TestAll();
 
-        CouponExpirationDailyJob Runner = new CouponExpirationDailyJob();
-        Thread t1 = new Thread(Runner);
-
-
-
-            try {
-                connectionPool.closeAllConnections();
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
+//            try {
+//                connectionPool.closeAllConnections();
+//            } catch (InterruptedException e) {
+//                System.out.println(e.getMessage());
+//            }
 
 
 

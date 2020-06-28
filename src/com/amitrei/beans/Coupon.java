@@ -36,8 +36,8 @@ public class Coupon {
      * CTOR for getCoupon methods - CategoryID as an int instead of Category.
      */
 
-    public Coupon(int getID, int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-        this.id=getID;
+    public Coupon(int id, int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
+        this.id=id;
         CompanyID = companyID;
         // Converting int CategoryID --> Category
         this.category = Category.values()[CategoryID-1];

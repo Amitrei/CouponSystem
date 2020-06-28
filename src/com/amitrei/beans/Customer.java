@@ -19,6 +19,7 @@ public class Customer {
         this.password = password;
         this.coupons = coupons;
     }
+
     public Customer(int id, String firstName, String lastName, String email, String password) {
         this.id = id;
         this.firstName = firstName;
@@ -42,7 +43,13 @@ public class Customer {
     }
 
     public void setId(int id) {
-        this.id = id;
+
+        if (this.id == 0) {
+            this.id = id;
+        }
+        else{
+            System.out.println("Cannot change customer ID");
+        }
     }
 
     public String getFirstName() {

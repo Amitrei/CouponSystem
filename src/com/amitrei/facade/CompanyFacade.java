@@ -54,6 +54,7 @@ public class CompanyFacade extends ClientFacade {
     }
 
     public List<Coupon> getCompanyCoupons(Category category) {
+
         // Testing stream
         List<Coupon> companyCoupons = getCompanyCoupons();
         var newListFiltered = companyCoupons.stream()
