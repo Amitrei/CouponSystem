@@ -6,8 +6,10 @@ import com.amitrei.beans.Company;
 import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
 import com.amitrei.dao.CouponsDAO;
+import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
 import com.amitrei.dbdao.CouponsDBDAO;
+import com.amitrei.dbdao.CustomersDBDAO;
 import com.amitrei.exceptions.CompanyExceptions.CannotChangeCompanyNameException;
 import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
 import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
@@ -16,6 +18,8 @@ import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
 import com.amitrei.facade.AdminFacade;
+import com.amitrei.facade.CompanyFacade;
+import com.amitrei.facade.CustomerFacade;
 import com.amitrei.login.ClientType;
 import com.amitrei.login.LoginManager;
 import com.amitrei.utils.MyDateUtil;
@@ -27,13 +31,20 @@ public class FullTest {
     MyDateUtil myDateUtil = new MyDateUtil();
     CouponsDAO couponsDAO = new CouponsDBDAO();
     AdminFacade adminFacade = new AdminFacade();
+    CustomerFacade customerFacade = new CustomerFacade();
+    CompanyFacade companyFacade = new CompanyFacade();
+    CustomersDAO customersDAO = new CustomersDBDAO();
 
     public void TestAll() {
         try {
 
             Connection connection = ConnectionPool.getInstance().getConnection();
-
-            printTitle("ADMINISTRATOR");
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            adminTestTitle();
+            printTitle("ADMINISTRATOR LOGIN");
             var LoggedInAsAdmin = LoginManager.getInstance().login("admin@admin.com", "1234", ClientType.Administrator);
             System.out.print("ADMIN LOGIN WITH WRONG PASSWORD AND USERNAME AND GETTING THE CURRECT FACADE:  ");
             System.out.println(LoggedInAsAdmin);
@@ -119,6 +130,9 @@ public class FullTest {
             System.out.println(((AdminFacade) LoggedInAsAdmin).getOneCompany(company0.getId()));
             deleteDummyCompanies(company0, company1, company2);
 
+
+
+
             printTitle("ADDING NEW CUSTOMER");
             Customer customer = new Customer("Amit", "Rei", "Amitrei@gmail.com", "1234");
             System.out.println("ADDING THIS CUSTOMER:" + customer);
@@ -142,6 +156,7 @@ public class FullTest {
             customer.setFirstName("Moshe");
             customer.setEmail("Moshes@gmail.com");
             customer.setLastName("Moshiko");
+            customer.setPassword("4321");
             System.out.println("TO " + customer);
             try {
                 adminFacade.updateCustomer(customer);
@@ -158,18 +173,75 @@ public class FullTest {
 
 
             printTitle("DELETING CUSTOMER");
-            /** NEEDS TO DO **/
+            System.out.println("### ADDING COUPONS PURCHASE TO THE CUSTOMER ###");
+            company0 = new Company("Couponim1", "111@gmail.com", "1111");
+            try {
+                adminFacade.addCompany(company0);
+            } catch (CompanyAlreadyExistsException e) {
+                System.out.println(e.getMessage());
+            }
+            coupon = new Coupon(company0.getId(), Category.WINTER, "Title", "Descreption", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.99, "Image.png");
+            couponsDAO.addCoupon(coupon);
+
+            try {
+                couponsDAO.addCouponPurchase(customer.getId(),couponsDAO.getCouponIDFromDB(coupon));
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponDateExpiredException e) {
+                System.out.println(e.getMessage());
+            }
+
+            System.out.println("PURCHASE ADDED SUCCSESSFULY: "+ customersDAO.getCustomerCoupons(customer.getId())  );
+            System.out.println("DELETING THIS CUSTOMER " + customer);
+            System.out.println("ALL CUSTOMERS FROM DB BEFORE DELETED " + adminFacade.getAllCustomers() );
+
+            adminFacade.deleteCustomer(customer.getId());
+            adminFacade.deleteCompany(company0.getId());
+            couponsDAO.deleteCoupon(couponsDAO.getCouponIDFromDB(coupon));
+            System.out.println("ALL CUSTOMERS FROM DB AFTER DELETED " + adminFacade.getAllCustomers() );
+
+
+
+
+
+
 
 
             printTitle("GETTING ALL THE CUSTOMERS:");
-            System.out.println("**** CREATING DUMMY CUSTOMERS");
+            System.out.println("### CREATING DUMMY CUSTOMERS ###");
             Customer customer1 = new Customer("avi", "ron", "Aviron@gmail.com", "1234");
             Customer customer2 = new Customer("Simha", "Rif", "simhaRif@gmail.com", "1234");
             Customer customer3 = new Customer("Ram", "Kol", "RamKol@gmail.com", "1234");
             creatingCustomerDummies(customer1, customer2, customer3);
             System.out.println("ALL CUSTOMERS:");
             System.out.println(adminFacade.getAllCustomers());
+
+            printTitle("GETTING A SINGLE CUSTOMER USING CUSTOMER ID");
+            System.out.println("GETTING THE DUMMIE CUSTOMER USING HIS ID: "+ customer1.getId());
+            System.out.println(adminFacade.getOneCustomer(customer1.getId()));
             deleteCustomerDummies(customer1, customer2, customer3);
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            companyTestTitle();
+            printTitle("COMPANY LOGIN");
+            System.out.println("MY TESTING COMPANY:" + adminFacade.getOneCompany(351));
+            System.out.println("### TRYING TO LOG-IN WITH WRONG PASSWORD ###");
+            System.out.println(LoginManager.getInstance().login("testCompany@gmail.com","WrongPassword",ClientType.Company));
+            System.out.println("### TRYING TO LOG-IN WITH CURRECT PASSWORD ### ");
+            System.out.println(LoginManager.getInstance().login("testCompany@gmail.com","1234",ClientType.Company).getClass());
+            var companyLoggedIn=((CompanyFacade)LoginManager.getInstance().login("testCompany@gmail.com","1234",ClientType.Company));
+
+
+
+
+
+
+
+
+
+
 
 
         } catch (SQLException throwables) {
@@ -256,5 +328,34 @@ public class FullTest {
         } catch (CustomerDoesNotExists e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void adminTestTitle() {
+
+        System.out.println("                                                                                                                                                                                \n" +
+                "                                                                                                                                                                                \n" +
+                "                                                                      db      `7MM\"\"\"Yb. `7MMM.     ,MMF'`7MMF'`7MN.   `7MF'    MMP\"\"MM\"\"YMM `7MM\"\"\"YMM   .M\"\"\"bgd MMP\"\"MM\"\"YMM \n" +
+                "                                                                     ;MM:       MM    `Yb. MMMb    dPMM    MM    MMN.    M      P'   MM   `7   MM    `7  ,MI    \"Y P'   MM   `7 \n" +
+                "                                                                    ,V^MM.      MM     `Mb M YM   ,M MM    MM    M YMb   M           MM        MM   d    `MMb.          MM      \n" +
+                "                                                                   ,M  `MM      MM      MM M  Mb  M' MM    MM    M  `MN. M           MM        MMmmMM      `YMMNq.      MM      \n" +
+                "                                                                   AbmmmqMA     MM     ,MP M  YM.P'  MM    MM    M   `MM.M           MM        MM   Y  , .     `MM      MM      \n" +
+                "                                                                  A'     VML    MM    ,dP' M  `YM'   MM    MM    M     YMM           MM        MM     ,M Mb     dM      MM      \n" +
+                "                                                                .AMA.   .AMMA..JMMmmmdP' .JML. `'  .JMML..JMML..JML.    YM         .JMML.    .JMMmmmmMMM P\"Ybmmd\"     .JMML.    \n" +
+                "                                                                                                                                                                                \n" +
+                "                                                                                                                                                                                ");
+    }
+
+    private void companyTestTitle() {
+        System.out.println("                                                                                                                                                                                             \n" +
+                "                                                                                                                                                                                             \n" +
+                "                                                      .g8\"\"\"bgd   .g8\"\"8q. `7MMM.     ,MMF'`7MM\"\"\"Mq.   db      `7MN.   `7MF'`YMM'   `MM'    MMP\"\"MM\"\"YMM `7MM\"\"\"YMM   .M\"\"\"bgd MMP\"\"MM\"\"YMM \n" +
+                "                                                    .dP'     `M .dP'    `YM. MMMb    dPMM    MM   `MM. ;MM:       MMN.    M    VMA   ,V      P'   MM   `7   MM    `7  ,MI    \"Y P'   MM   `7 \n" +
+                "                                                    dM'       ` dM'      `MM M YM   ,M MM    MM   ,M9 ,V^MM.      M YMb   M     VMA ,V            MM        MM   d    `MMb.          MM      \n" +
+                "                                                    MM          MM        MM M  Mb  M' MM    MMmmdM9 ,M  `MM      M  `MN. M      VMMP             MM        MMmmMM      `YMMNq.      MM      \n" +
+                "                                                    MM.         MM.      ,MP M  YM.P'  MM    MM      AbmmmqMA     M   `MM.M       MM              MM        MM   Y  , .     `MM      MM      \n" +
+                "                                                    `Mb.     ,' `Mb.    ,dP' M  `YM'   MM    MM     A'     VML    M     YMM       MM              MM        MM     ,M Mb     dM      MM      \n" +
+                "                                                      `\"bmmmd'    `\"bmmd\"' .JML. `'  .JMML..JMML. .AMA.   .AMMA..JML.    YM     .JMML.          .JMML.    .JMMmmmmMMM P\"Ybmmd\"     .JMML.    \n" +
+                "                                                                                                                                                                                             \n" +
+                "                                                                                                                                                                                             ");
     }
 }

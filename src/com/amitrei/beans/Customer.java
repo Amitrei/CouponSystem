@@ -94,13 +94,13 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
+        return " \nCustomer{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +
-                '}';
+                "} \n";
     }
 }

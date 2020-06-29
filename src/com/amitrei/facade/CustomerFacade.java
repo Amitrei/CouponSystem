@@ -37,6 +37,7 @@ public class CustomerFacade extends ClientFacade {
 
         else {
             couponsDAO.addCouponPurchase(this.customerID, coupon.getId());
+            customersDAO.getOneCustomer(this.customerID).getCoupons().add(coupon);
             coupon.setAmount(coupon.getAmount() - 1);
             couponsDAO.updateCoupon(coupon.getId(), coupon);
         }
