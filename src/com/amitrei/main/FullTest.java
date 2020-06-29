@@ -13,6 +13,7 @@ import com.amitrei.dbdao.CustomersDBDAO;
 import com.amitrei.exceptions.CompanyExceptions.CannotChangeCompanyNameException;
 import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
 import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
+import com.amitrei.exceptions.CouponsExceptions.CouponAlreadyExistsException;
 import com.amitrei.exceptions.CouponsExceptions.CouponDateExpiredException;
 import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
@@ -23,6 +24,8 @@ import com.amitrei.facade.CustomerFacade;
 import com.amitrei.login.ClientType;
 import com.amitrei.login.LoginManager;
 import com.amitrei.utils.MyDateUtil;
+import jdk.swing.interop.SwingInterOpUtils;
+import org.w3c.dom.ls.LSOutput;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -62,13 +65,14 @@ public class FullTest {
                 System.out.println(e.getMessage());
             }
             System.out.println("MAKING SURE COMPANY WAS ADDED BY GETTING COMPANIES FROM DB     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
-            System.out.println("ADDING THE SAME COMPANY AGAIN:     " + company.toString());
+            System.out.println();
+            System.out.println("ADDING THE SAME COMPANY AGAIN:     " + company);
             try {
                 ((AdminFacade) LoggedInAsAdmin).addCompany(company);
             } catch (CompanyAlreadyExistsException e) {
                 System.out.println(e.getMessage());
             }
-            System.out.println("MAKING SURE COMPANY WASNT ADDED AFTER EXCEPTION     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+            System.out.println();
 
 
             printTitle("UPDATE COMPANY");
@@ -85,15 +89,18 @@ public class FullTest {
 
 
             System.out.println("COMPANY DETAILS FROM DB AFTER UPDATE     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+            System.out.println();
+            System.out.println("TRYING TO CHANGE COMPANY NAME:");
             company.setName("Blala");
 
-            System.out.println("TRYING TO CHANGE COMPANY NAME:");
             try {
                 ((AdminFacade) LoggedInAsAdmin).updateCompany(company);
             } catch (CannotChangeCompanyNameException e) {
                 System.out.println(e.getMessage());
             }
+            System.out.println();
             System.out.println("COMPANY DETAILS FROM DB AFTER UPDATE     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+            System.out.println();
             System.out.println("TRYING CHANGING ID:");
             company.setId(123);
 
@@ -109,14 +116,19 @@ public class FullTest {
             } catch (CouponDateExpiredException e) {
                 System.out.println(e.getMessage());
             }
-
+            System.out.println();
             System.out.println("DELETING COMPANY BY COMPANY ID:" + company.getId());
+            System.out.println();
+            System.out.println("BEFORE DELETE GETTING COMPANIES FROM DB     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+
             try {
                 ((AdminFacade) LoggedInAsAdmin).deleteCompany(company.getId());
             } catch (CompanyDoesNotExistsException e) {
                 System.out.println(e.getMessage());
             }
-            System.out.println("MAKING SURE COMPANY WAS DELETED BY GETTING COMPANIES FROM DB     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+            System.out.println();
+
+            System.out.println("AFTER DELETE GETTING COMPANIES FROM DB     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
 
             printTitle("GETTING ALL COMPANIES");
             System.out.println("ADDING DUMMY COMPANIES");
@@ -131,8 +143,6 @@ public class FullTest {
             deleteDummyCompanies(company0, company1, company2);
 
 
-
-
             printTitle("ADDING NEW CUSTOMER");
             Customer customer = new Customer("Amit", "Rei", "Amitrei@gmail.com", "1234");
             System.out.println("ADDING THIS CUSTOMER:" + customer);
@@ -142,6 +152,7 @@ public class FullTest {
                 System.out.println(e.getMessage());
             }
             System.out.println("CHECKING IF CUSTOMER ADDED TO DB:" + adminFacade.getAllCustomers());
+            System.out.println();
             System.out.println("TRYING TO ADD A CUSTOMER WITH THE SAME EMAIL:");
             Customer fakeCustomer = new Customer("moshe", "cohen", "Amitrei@gmail.com", "41414");
 
@@ -184,27 +195,22 @@ public class FullTest {
             couponsDAO.addCoupon(coupon);
 
             try {
-                couponsDAO.addCouponPurchase(customer.getId(),couponsDAO.getCouponIDFromDB(coupon));
+                couponsDAO.addCouponPurchase(customer.getId(), couponsDAO.getCouponIDFromDB(coupon));
             } catch (CouponNotFoundException e) {
                 System.out.println(e.getMessage());
             } catch (CouponDateExpiredException e) {
                 System.out.println(e.getMessage());
             }
 
-            System.out.println("PURCHASE ADDED SUCCSESSFULY: "+ customersDAO.getCustomerCoupons(customer.getId())  );
+            System.out.println("PURCHASE ADDED SUCCSESSFULY: " + customersDAO.getCustomerCoupons(customer.getId()));
+            System.out.println();
             System.out.println("DELETING THIS CUSTOMER " + customer);
-            System.out.println("ALL CUSTOMERS FROM DB BEFORE DELETED " + adminFacade.getAllCustomers() );
+            System.out.println("ALL CUSTOMERS FROM DB BEFORE DELETED " + adminFacade.getAllCustomers());
 
             adminFacade.deleteCustomer(customer.getId());
             adminFacade.deleteCompany(company0.getId());
             couponsDAO.deleteCoupon(couponsDAO.getCouponIDFromDB(coupon));
-            System.out.println("ALL CUSTOMERS FROM DB AFTER DELETED " + adminFacade.getAllCustomers() );
-
-
-
-
-
-
+            System.out.println("ALL CUSTOMERS FROM DB AFTER DELETED " + adminFacade.getAllCustomers());
 
 
             printTitle("GETTING ALL THE CUSTOMERS:");
@@ -217,7 +223,7 @@ public class FullTest {
             System.out.println(adminFacade.getAllCustomers());
 
             printTitle("GETTING A SINGLE CUSTOMER USING CUSTOMER ID");
-            System.out.println("GETTING THE DUMMIE CUSTOMER USING HIS ID: "+ customer1.getId());
+            System.out.println("GETTING THE DUMMIE CUSTOMER USING HIS ID: " + customer1.getId());
             System.out.println(adminFacade.getOneCustomer(customer1.getId()));
             deleteCustomerDummies(customer1, customer2, customer3);
             System.out.println();
@@ -228,10 +234,122 @@ public class FullTest {
             printTitle("COMPANY LOGIN");
             System.out.println("MY TESTING COMPANY:" + adminFacade.getOneCompany(351));
             System.out.println("### TRYING TO LOG-IN WITH WRONG PASSWORD ###");
-            System.out.println(LoginManager.getInstance().login("testCompany@gmail.com","WrongPassword",ClientType.Company));
+            System.out.println(LoginManager.getInstance().login("testCompany@gmail.com", "WrongPassword", ClientType.Company));
+            System.out.println();
             System.out.println("### TRYING TO LOG-IN WITH CURRECT PASSWORD ### ");
-            System.out.println(LoginManager.getInstance().login("testCompany@gmail.com","1234",ClientType.Company).getClass());
-            var companyLoggedIn=((CompanyFacade)LoginManager.getInstance().login("testCompany@gmail.com","1234",ClientType.Company));
+            System.out.println(LoginManager.getInstance().login("testCompany@gmail.com", "1234", ClientType.Company).getClass());
+            var companyLoggedIn = ((CompanyFacade) LoginManager.getInstance().login("testCompany@gmail.com", "1234", ClientType.Company));
+            printTitle("COMPANY ADDING COUPON");
+            coupon = new Coupon(companyLoggedIn.getCompanyID(), Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.9, "image.png");
+            System.out.println("ADDING THIS COUPON: " + coupon);
+            try {
+                companyLoggedIn.addCoupon(coupon);
+            } catch (CouponAlreadyExistsException e) {
+                System.out.println(e.getMessage());
+            }
+            System.out.println("CHECKING IF COUPON IS ADDED TO DB:");
+            System.out.println(companyLoggedIn.getCompanyCoupons());
+            System.out.println("TRYING TO ADD THE SAME TITLE COUPON:");
+            try {
+                companyLoggedIn.addCoupon(coupon);
+            } catch (CouponAlreadyExistsException e) {
+                System.out.println(e.getMessage());
+            }
+            System.out.println();
+            System.out.println("ADDING COUPON:");
+            Coupon coupon2 = new Coupon(413, Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.9, "image.png");
+            System.out.println(coupon2);
+            try {
+                companyLoggedIn.addCoupon(coupon2);
+            } catch (CouponAlreadyExistsException e) {
+                System.out.println(e.getMessage());
+            }
+            System.out.println("CHECKING IF BOTH COUPONS HAVING THE SAME TITLE BUT DIFFRENTS COMAPNIES:");
+            System.out.println(couponsDAO.getAllCoupons());
+            try {
+                companyLoggedIn.deleteCoupon(coupon2.getId());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            printTitle("UPDATING COUPON");
+            System.out.println("TRYING TO UPDATE COUPON ID:");
+            coupon.setId(123);
+            System.out.println();
+            System.out.println("TRYING TO UPDATE COMPANY ID:");
+            coupon.setCompanyID(123);
+            System.out.println();
+
+            System.out.println("UPDATING COUPON DETAILS:");
+            coupon.setAmount(5);
+            coupon.setCategory(Category.FOOD);
+            coupon.setImage("ChangedImage.jpeg");
+            coupon.setPrice(13);
+            System.out.println(coupon);
+            System.out.println("BEFORE UPDATING COUPON FROM DB:");
+            System.out.println(companyLoggedIn.getCompanyCoupons());
+
+            try {
+                couponsDAO.updateCoupon(coupon.getId(), coupon);
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            System.out.println("AFTER UPDATING COUPON FROM DB:");
+            System.out.println(companyLoggedIn.getCompanyCoupons());
+
+
+            printTitle("DELETING COUPON");
+
+            System.out.println("### ADDING PURCHASE TO THE COUPON ###");
+            try {
+                couponsDAO.addCouponPurchase(62, coupon.getId());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponDateExpiredException e) {
+                System.out.println(e.getMessage());
+            }
+
+            System.out.println("DELETING COUPON " + coupon);
+            System.out.println("BEFORE DELETING COUPON FROM DB:");
+            System.out.println(couponsDAO.getAllCoupons());
+            System.out.println("AFTER DELETING COUPON FROM DB:");
+
+
+            try {
+                companyLoggedIn.deleteCoupon(coupon.getId());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+
+            System.out.println(couponsDAO.getAllCoupons());
+
+            printTitle("ALL COUPONS OF COMPANY");
+            System.out.println("### ADDING COUPONS DUMMIES ###");
+            System.out.println();
+            System.out.println("GETTING ALL COUPONS OF THE CURRENT COMPANY:");
+            coupon=new Coupon(351,Category.FOOD,"DummyTitle1","DummyDescription1",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,30,"DummyImage1.png");
+            coupon2=new Coupon(351,Category.Electricity,"DummyTitle2","DummyDescription2",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,60,"DummyImage2.png");
+            Coupon coupon3=new Coupon(351,Category.Electricity,"DummyTitle3","DummyDescription3",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,90,"DummyImage3.png");
+            addDummyCoupons(coupon,coupon2,coupon3);
+            System.out.println(companyLoggedIn.getCompanyCoupons());
+
+            printTitle("ALL COUPONS OF SPECIFIC CATEGORY");
+            System.out.println("ALL COUPONS OF THE SPECIFIC CATEGORY:" + Category.FOOD);
+            System.out.println(companyLoggedIn.getCompanyCoupons(Category.FOOD));
+            System.out.println();
+            System.out.println("ALL COUPONS OF THE SPECIFIC CATEGORY:" + Category.Electricity);
+            System.out.println(companyLoggedIn.getCompanyCoupons(Category.Electricity));
+            printTitle("ALL COUPONS BY MAXIMUM PRICE");
+            System.out.println("ALL COUPONS BY MAXIMUM PRICE OF:30");
+            System.out.println(companyLoggedIn.getCompanyCoupons(30.0));
+            System.out.println();
+            System.out.println("ALL COUPONS BY MAXIMUM PRICE OF:60");
+            System.out.println(companyLoggedIn.getCompanyCoupons(60.0));
+            System.out.println();   System.out.println("ALL COUPONS BY MAXIMUM PRICE OF:100");
+            System.out.println(companyLoggedIn.getCompanyCoupons(100.0));
+            System.out.println();
+            printTitle("COMPANY DETAILS");
+            System.out.println(companyLoggedIn.getCompanyDetails());
+            deleteDummyCoupons(coupon,coupon2,coupon3);
 
 
 
@@ -240,18 +358,14 @@ public class FullTest {
 
 
 
-
-
-
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (CustomerDoesNotExists customerDoesNotExists) {
-            customerDoesNotExists.printStackTrace();
+            System.out.println(e.getMessage());
+        } catch (CustomerDoesNotExists e) {
+            System.out.println(e.getMessage());
         } catch (CompanyDoesNotExistsException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
     }
@@ -268,6 +382,47 @@ public class FullTest {
         System.out.println();
         System.out.println("                                             " + title + "                                                                                                                                                                                                                           ");
         System.out.println();
+
+    }
+
+
+    private void addDummyCoupons( Coupon coupon1, Coupon coupon2, Coupon coupon3) {
+        CompanyFacade companyLoggedIn=null;
+        try {
+           companyLoggedIn = ((CompanyFacade) LoginManager.getInstance().login("testCompany@gmail.com", "1234", ClientType.Company));
+        } catch (CompanyDoesNotExistsException e) {
+            System.out.println(e.getMessage());
+        } catch (CustomerDoesNotExists e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            companyLoggedIn.addCoupon(coupon1);
+            companyLoggedIn.addCoupon(coupon2);
+            companyLoggedIn.addCoupon(coupon3);
+        } catch (CouponAlreadyExistsException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+
+    private void deleteDummyCoupons(Coupon coupon1, Coupon coupon2, Coupon coupon3) {
+        CompanyFacade companyLoggedIn=null;
+        try {
+            companyLoggedIn = ((CompanyFacade) LoginManager.getInstance().login("testCompany@gmail.com", "1234", ClientType.Company));
+        } catch (CompanyDoesNotExistsException e) {
+            System.out.println(e.getMessage());
+        } catch (CustomerDoesNotExists e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            companyLoggedIn.deleteCoupon(coupon1.getId());
+            companyLoggedIn.deleteCoupon(coupon2.getId());
+            companyLoggedIn.deleteCoupon(coupon3.getId());
+
+        } catch (CouponNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 

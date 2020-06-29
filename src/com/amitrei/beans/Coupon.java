@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Coupon {
     private int id;
-    private int CompanyID;
+    private int companyID;
     private Category category;
     private String title;
     private Date startDate;
@@ -20,7 +20,7 @@ public class Coupon {
      */
     public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
 
-        CompanyID = companyID;
+        this.companyID = companyID;
         this.category = category;
         this.title = title;
         this.startDate = startDate;
@@ -38,7 +38,7 @@ public class Coupon {
 
     public Coupon(int id, int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
         this.id=id;
-        CompanyID = companyID;
+        this.companyID = companyID;
         // Converting int CategoryID --> Category
         this.category = Category.values()[CategoryID-1];
         this.title = title;
@@ -55,11 +55,17 @@ public class Coupon {
     }
 
     public void setId(int id) {
-        this.id = id;
+        if(this.id==0) {
+            this.id = id;
+        }
+        else
+        {
+            System.out.println("Cannot change coupon ID");
+        }
     }
 
     public int getCompanyID() {
-        return CompanyID;
+        return companyID;
     }
 
     public String getDescription() {
@@ -67,7 +73,13 @@ public class Coupon {
     }
 
     public void setCompanyID(int companyID) {
-        CompanyID = companyID;
+        if(this.companyID ==0) {
+            this.companyID = companyID;
+        }
+        else{
+            System.out.println("Cannot change Company ID");
+        }
+
     }
 
     public Category getCategory() {
@@ -128,9 +140,9 @@ public class Coupon {
 
     @Override
     public String toString() {
-        return "Coupon{" +
+        return "Coupon " +
                 "id=" + id +
-                ", CompanyID=" + CompanyID +
+                ", CompanyID=" + companyID +
                 ", category=" + category +
                 ", title='" + title + '\'' +
                 ", startDate=" + startDate +
@@ -138,6 +150,6 @@ public class Coupon {
                 ", amount=" + amount +
                 ", price=" + price +
                 ", image='" + image + '\'' +
-                '}';
+                "\n";
     }
 }

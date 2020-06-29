@@ -35,11 +35,10 @@ public class CompanyFacade extends ClientFacade {
     }
 
     public void updateCoupon(Coupon coupon) throws CouponNotFoundException {
-        coupon.setId(couponsDAO.getCouponIDFromDB(coupon));
         if (!couponsDAO.isCouponExists(coupon.getTitle(), coupon.getCompanyID()))
             throw new CouponNotFoundException();
 
-        couponsDAO.updateCoupon(coupon.getId(), coupon);
+        couponsDAO.updateCoupon(coupon.getId(),coupon);
 
 
     }
@@ -86,11 +85,7 @@ public class CompanyFacade extends ClientFacade {
     public Company getCompanyDetails() throws CompanyDoesNotExistsException {
         Company company = companiesDAO.getOneCompany(this.companyID);
         company.setCoupons(couponsDAO.getAllCouponsOfCompany(this.companyID));
-        company.setId(this.companyID);
         return company;
     }
 
-    public void setCompanyID(int companyID) {
-        this.companyID = companyID;
-    }
 }
