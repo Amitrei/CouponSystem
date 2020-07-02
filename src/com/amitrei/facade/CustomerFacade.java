@@ -15,15 +15,15 @@ import java.util.List;
 
 public class CustomerFacade extends ClientFacade {
     private int customerID;
-    MyDateUtil myDateUtil = new MyDateUtil();
 
+    MyDateUtil myDateUtil = new MyDateUtil();
     @Override
-    public boolean login(String email, String password) throws CompanyDoesNotExistsException, CustomerDoesNotExists {
+    public boolean login(String email, String password) {
         if (customersDAO.isCustomerExists(email, password)) {
             this.customerID = customersDAO.getOneCustomer(email).getId();
             return true;
         } else {
-            throw new CustomerDoesNotExists();
+            return false;
         }
     }
 
@@ -37,7 +37,6 @@ public class CustomerFacade extends ClientFacade {
 
         else {
             couponsDAO.addCouponPurchase(this.customerID, coupon.getId());
-            customersDAO.getOneCustomer(this.customerID).getCoupons().add(coupon);
             coupon.setAmount(coupon.getAmount() - 1);
             couponsDAO.updateCoupon(coupon.getId(), coupon);
         }
@@ -59,7 +58,16 @@ public class CustomerFacade extends ClientFacade {
 
     }
 
+    public int getCustomerID() {
+        return customerID;
+    }
+
     public Customer getCustomerDetails() {
-        return customersDAO.getOneCustomer(this.customerID);
+        Customer myCustomer = customersDAO.getOneCustomer(this.customerID);
+
+        for(Coupon coupon : getCustomerCoupons()) {
+        myCustomer.getCoupons().add(coupon);
+        }
+        return myCustomer;
     }
 }

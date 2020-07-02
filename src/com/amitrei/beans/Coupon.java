@@ -140,7 +140,7 @@ public class Coupon {
 
     @Override
     public String toString() {
-        return "Coupon " +
+        return "\nCoupon " +
                 "id=" + id +
                 ", CompanyID=" + companyID +
                 ", category=" + category +

@@ -62,16 +62,17 @@ public class CouponsDBDAO implements CouponsDAO {
         try {
 
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "UPDATE `couponsystem`.`coupons` SET  `CATEGORY_ID` = ?,`DESCRIPTION` = ?,`START_DATE`=?,`END_DATE`=?,`AMOUNT`=?,`PRICE`=?,`IMAGE`=?  WHERE (`ID` = ?)";
+            String sql = "UPDATE `couponsystem`.`coupons` SET  `CATEGORY_ID` = ?,`TITLE`= ? ,`DESCRIPTION` = ?,`START_DATE`=?,`END_DATE`=?,`AMOUNT`=?,`PRICE`=?,`IMAGE`=?  WHERE (`ID` = ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, coupon.getCategory().ordinal() + 1);
-            preparedStatement.setString(2, coupon.getDescription());
-            preparedStatement.setDate(3, coupon.getStartDate());
-            preparedStatement.setDate(4, coupon.getEndDate());
-            preparedStatement.setInt(5, coupon.getAmount());
-            preparedStatement.setDouble(6, coupon.getPrice());
-            preparedStatement.setString(7, coupon.getImage());
-            preparedStatement.setInt(8, couponID);
+            preparedStatement.setString(2,coupon.getTitle());
+            preparedStatement.setString(3, coupon.getDescription());
+            preparedStatement.setDate(4, coupon.getStartDate());
+            preparedStatement.setDate(5, coupon.getEndDate());
+            preparedStatement.setInt(6, coupon.getAmount());
+            preparedStatement.setDouble(7, coupon.getPrice());
+            preparedStatement.setString(8, coupon.getImage());
+            preparedStatement.setInt(9, couponID);
             preparedStatement.executeUpdate();
 
         } catch (InterruptedException | SQLException e) {

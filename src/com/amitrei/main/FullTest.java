@@ -5,6 +5,7 @@ import com.amitrei.beans.Category;
 import com.amitrei.beans.Company;
 import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
+import com.amitrei.dailyjob.CouponExpirationDailyJob;
 import com.amitrei.dao.CouponsDAO;
 import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
@@ -16,7 +17,9 @@ import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
 import com.amitrei.exceptions.CouponsExceptions.CouponAlreadyExistsException;
 import com.amitrei.exceptions.CouponsExceptions.CouponDateExpiredException;
 import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
+import com.amitrei.exceptions.CouponsExceptions.CouponOutOfStockException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
+import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyPurchasedCouponException;
 import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
 import com.amitrei.facade.AdminFacade;
 import com.amitrei.facade.CompanyFacade;
@@ -37,19 +40,31 @@ public class FullTest {
     CustomerFacade customerFacade = new CustomerFacade();
     CompanyFacade companyFacade = new CompanyFacade();
     CustomersDAO customersDAO = new CustomersDBDAO();
+    CouponExpirationDailyJob dailyJob = new CouponExpirationDailyJob();
 
-    public void TestAll() {
+
+    public void testAll() {
         try {
 
+            initTestTitle();
             Connection connection = ConnectionPool.getInstance().getConnection();
+            System.out.println("### Initialized connections ###");
+            Thread t1 = new Thread(dailyJob);
             System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
+            System.out.println("### Initialize the daily job ### ");
+            t1.start();
+
+
+
+
+
+
+
+
             adminTestTitle();
             printTitle("ADMINISTRATOR LOGIN");
             var LoggedInAsAdmin = LoginManager.getInstance().login("admin@admin.com", "1234", ClientType.Administrator);
-            System.out.print("ADMIN LOGIN WITH WRONG PASSWORD AND USERNAME AND GETTING THE CURRECT FACADE:  ");
+            System.out.print("ADMIN LOGIN WITH WRONG PASSWORD AND USERNAME:  ");
             System.out.println(LoggedInAsAdmin);
             LoggedInAsAdmin = LoginManager.getInstance().login("admin@admin.com", "admin", ClientType.Administrator);
             System.out.print("ADMIN LOGIN WITH  PASSWORD AND USERNAME AND GETTING THE CURRECT FACADE: ");
@@ -257,7 +272,7 @@ public class FullTest {
             }
             System.out.println();
             System.out.println("ADDING COUPON:");
-            Coupon coupon2 = new Coupon(413, Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.9, "image.png");
+            Coupon coupon2 = new Coupon(904, Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.9, "image.png");
             System.out.println(coupon2);
             try {
                 companyLoggedIn.addCoupon(coupon2);
@@ -284,6 +299,7 @@ public class FullTest {
             coupon.setCategory(Category.FOOD);
             coupon.setImage("ChangedImage.jpeg");
             coupon.setPrice(13);
+            coupon.setTitle("UpdatedTitle");
             System.out.println(coupon);
             System.out.println("BEFORE UPDATING COUPON FROM DB:");
             System.out.println(companyLoggedIn.getCompanyCoupons());
@@ -326,10 +342,7 @@ public class FullTest {
             System.out.println("### ADDING COUPONS DUMMIES ###");
             System.out.println();
             System.out.println("GETTING ALL COUPONS OF THE CURRENT COMPANY:");
-            coupon=new Coupon(351,Category.FOOD,"DummyTitle1","DummyDescription1",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,30,"DummyImage1.png");
-            coupon2=new Coupon(351,Category.Electricity,"DummyTitle2","DummyDescription2",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,60,"DummyImage2.png");
-            Coupon coupon3=new Coupon(351,Category.Electricity,"DummyTitle3","DummyDescription3",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,90,"DummyImage3.png");
-            addDummyCoupons(coupon,coupon2,coupon3);
+
             System.out.println(companyLoggedIn.getCompanyCoupons());
 
             printTitle("ALL COUPONS OF SPECIFIC CATEGORY");
@@ -349,8 +362,185 @@ public class FullTest {
             System.out.println();
             printTitle("COMPANY DETAILS");
             System.out.println(companyLoggedIn.getCompanyDetails());
-            deleteDummyCoupons(coupon,coupon2,coupon3);
 
+
+
+
+
+
+
+            customerTestTitle();
+            printTitle("CUSTOMER LOGIN");
+            var customerLoggedIn=(CustomerFacade)LoginManager.getInstance().login("amit@gmail.com","1234",ClientType.Customer);
+            Customer myCustomer = customerLoggedIn.getCustomerDetails();
+            System.out.println("CUSTOMER LOGIN WITH WRONG DETAILS: " + LoginManager.getInstance().login("amit@gmail.com","1234WRONG",ClientType.Customer));
+            System.out.println("CUSTOMER LOGIN WITH CURRECT DETAILS: " +customerLoggedIn.getClass());
+            System.out.println("LOGGED IN SUCCSSESFULY");
+                        printTitle("PURCHASE COUPON");
+
+            coupon = new Coupon(351,Category.FOOD,"Test title","Test description",myDateUtil.currentDate(),myDateUtil.expiredDate(10),100,99.9,"image.png");
+            try {
+                companyLoggedIn.addCoupon(coupon);
+            } catch (CouponAlreadyExistsException e) {
+                System.out.println(e.getMessage());
+            }
+
+            Coupon myCoupon=null;
+            try {
+                 myCoupon=couponsDAO.getOneCoupon(coupon.getId());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+
+            }
+
+
+                System.out.println("TRYING TO PURCHASE THIS COUPON" +myCoupon);
+
+
+
+            try {
+                customerLoggedIn.purchaseCoupon(myCoupon);
+            } catch (CouponDateExpiredException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (CustomerAlreadyPurchasedCouponException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponOutOfStockException e) {
+                System.out.println(e.getMessage());
+            }
+
+
+            System.out.println("MAKING SURE IN DB COUPON PURCHASED ");
+            System.out.println(customerLoggedIn.getCustomerCoupons());
+            System.out.println();
+            System.out.println("AFTER PURCHASING MAKING SURE THAT AMOUNT HAS CHANGED:" + myCoupon );
+            System.out.println("TRYING TO RE-PURCHASE THE SAME COUPON");
+            try {
+                customerLoggedIn.purchaseCoupon(myCoupon);
+            } catch (CouponDateExpiredException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (CustomerAlreadyPurchasedCouponException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponOutOfStockException e) {
+                System.out.println(e.getMessage());
+            }
+
+
+            myCoupon.setEndDate(myDateUtil.expiredDate(-1));
+            try {
+                companyLoggedIn.updateCoupon(myCoupon);
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+
+
+
+            couponsDAO.deleteCouponPurchase(customerLoggedIn.getCustomerID(),coupon.getId());
+            System.out.println();
+            System.out.println("MAKING THE COUPON EXPIRED" + myCoupon);
+            System.out.println("TRYING TO PURCHASE THE EXPIRED COUPON:");
+
+            try {
+                customerLoggedIn.purchaseCoupon(myCoupon);
+            } catch (CouponDateExpiredException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (CustomerAlreadyPurchasedCouponException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponOutOfStockException e) {
+                System.out.println(e.getMessage());
+            }
+
+            couponsDAO.deleteCouponPurchase(customerLoggedIn.getCustomerID(),coupon.getId());
+            myCoupon.setAmount(0);
+            myCoupon.setEndDate(myDateUtil.expiredDate(10));
+            try {
+                companyLoggedIn.updateCoupon(myCoupon);
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            System.out.println();
+            System.out.println("CHANGING COUPON AMOUNT TO 0" + myCoupon);
+            System.out.println("TRYING TO PURCHASE");
+            try {
+                customerLoggedIn.purchaseCoupon(myCoupon);
+            } catch (CouponDateExpiredException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (CustomerAlreadyPurchasedCouponException e) {
+                System.out.println(e.getMessage());
+            } catch (CouponOutOfStockException e) {
+                System.out.println(e.getMessage());
+            }
+
+            myCoupon.setAmount(100);
+            try {
+                companyLoggedIn.updateCoupon(myCoupon);
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+
+
+            try {
+                companyLoggedIn.deleteCoupon(coupon.getId());
+            } catch (CouponNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+
+
+
+
+
+
+
+            printTitle("ALL COUPONS OF CUSTOMERS");
+            System.out.println("### MAKING DUMMY COUPONS AND PURCHASING THEM###");
+//            Coupon coupon4=new Coupon(351,Category.FOOD,"DummyTitle1","DummyDescription1",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,30,"DummyImage1.png");
+//            Coupon coupon5=new Coupon(351,Category.Electricity,"DummyTitle2","DummyDescription2",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,60,"DummyImage2.png");
+//            Coupon coupon6=new Coupon(351,Category.Electricity,"DummyTitle3","DummyDescription3",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,90,"DummyImage3.png");
+//            addDummyCoupons(coupon4,coupon5,coupon6);
+//            try {
+//                customerLoggedIn.purchaseCoupon(coupon4);
+//                customerLoggedIn.purchaseCoupon(coupon5);
+//                customerLoggedIn.purchaseCoupon(coupon6);
+//            } catch (CouponDateExpiredException e) {
+//                System.out.println(e.getMessage());
+//            } catch (CouponNotFoundException e) {
+//                System.out.println(e.getMessage());
+//            } catch (CustomerAlreadyPurchasedCouponException e) {
+//                System.out.println(e.getMessage());
+//            } catch (CouponOutOfStockException e) {
+//                System.out.println(e.getMessage());
+//            }
+            System.out.println("ALL COUPONS OF CUSTOMER");
+            System.out.println(customerLoggedIn.getCustomerCoupons());
+            System.out.println();
+            System.out.println("ALL COUPONS OF CUSTOMER BY CATEGORY:" + Category.Electricity);
+            System.out.println(customerLoggedIn.getCustomerCoupons(Category.Electricity));
+            System.out.println();
+            System.out.println("ALL COUPONS OF CUSTOMER MAXIMUM PRICE OF: 50");
+            System.out.println(customerLoggedIn.getCustomerCoupons(50.0));
+
+
+
+
+            printTitle("CUSTOMER DETAILS");
+            System.out.println(myCustomer);
+
+//            deleteDummyCoupons(coupon4,coupon5,coupon6);
+
+
+
+            printCloseTest();
+            System.out.println("### Shuting down daily job ###");
+            dailyJob.stopIt();
+            System.out.println("### Closing all connections ###");
+            ConnectionPool.getInstance().closeAllConnections();
 
 
 
@@ -512,5 +702,52 @@ public class FullTest {
                 "                                                      `\"bmmmd'    `\"bmmd\"' .JML. `'  .JMML..JMML. .AMA.   .AMMA..JML.    YM     .JMML.          .JMML.    .JMMmmmmMMM P\"Ybmmd\"     .JMML.    \n" +
                 "                                                                                                                                                                                             \n" +
                 "                                                                                                                                                                                             ");
+    }
+
+    private void customerTestTitle() {
+        System.out.println("                                                                                                                                                                                              \n" +
+                "                                                                                                                                                                                              \n" +
+                "                                      .g8\"\"\"bgd `7MMF'   `7MF' .M\"\"\"bgd MMP\"\"MM\"\"YMM   .g8\"\"8q.   `7MMM.     ,MMF'`7MM\"\"\"YMM  `7MM\"\"\"Mq.      MMP\"\"MM\"\"YMM `7MM\"\"\"YMM   .M\"\"\"bgd MMP\"\"MM\"\"YMM \n" +
+                "                                    .dP'     `M   MM       M  ,MI    \"Y P'   MM   `7 .dP'    `YM.   MMMb    dPMM    MM    `7    MM   `MM.     P'   MM   `7   MM    `7  ,MI    \"Y P'   MM   `7 \n" +
+                "                                    dM'       `   MM       M  `MMb.          MM      dM'      `MM   M YM   ,M MM    MM   d      MM   ,M9           MM        MM   d    `MMb.          MM      \n" +
+                "                                    MM            MM       M    `YMMNq.      MM      MM        MM   M  Mb  M' MM    MMmmMM      MMmmdM9            MM        MMmmMM      `YMMNq.      MM      \n" +
+                "                                    MM.           MM       M  .     `MM      MM      MM.      ,MP   M  YM.P'  MM    MM   Y  ,   MM  YM.            MM        MM   Y  , .     `MM      MM      \n" +
+                "                                    `Mb.     ,'   YM.     ,M  Mb     dM      MM      `Mb.    ,dP'   M  `YM'   MM    MM     ,M   MM   `Mb.          MM        MM     ,M Mb     dM      MM      \n" +
+                "                                      `\"bmmmd'     `bmmmmd\"'  P\"Ybmmd\"     .JMML.      `\"bmmd\"'   .JML. `'  .JMML..JMMmmmmMMM .JMML. .JMM.       .JMML.    .JMMmmmmMMM P\"Ybmmd\"     .JMML.    \n" +
+                "                                                                                                                                                                                              \n" +
+                "                                                                                                                                                                                              ");
+    }
+
+    private void initTestTitle() {
+        System.out.println("\n" +
+                "                                                                                                                                                                                                                   \n" +
+                "                                                                                                                                                                                                                   \n" +
+                "                `7MMF'    `7MN.   `7MF'    `7MMF'    MMP\"\"MM\"\"YMM     `7MMF'          db          MMP\"\"MM\"\"YMM     `7MM\"\"\"YMM                          MMP\"\"MM\"\"YMM     `7MM\"\"\"YMM       .M\"\"\"bgd     MMP\"\"MM\"\"YMM \n" +
+                "                  MM        MMN.    M        MM      P'   MM   `7       MM           ;MM:         P'   MM   `7       MM    `7                          P'   MM   `7       MM    `7      ,MI    \"Y     P'   MM   `7 \n" +
+                "                  MM        M YMb   M        MM           MM            MM          ,V^MM.             MM            MM   d                                 MM            MM   d        `MMb.              MM      \n" +
+                "                  MM        M  `MN. M        MM           MM            MM         ,M  `MM             MM            MMmmMM                                 MM            MMmmMM          `YMMNq.          MM      \n" +
+                "                  MM        M   `MM.M        MM           MM            MM         AbmmmqMA            MM            MM   Y  ,                              MM            MM   Y  ,     .     `MM          MM      \n" +
+                "                  MM        M     YMM        MM           MM            MM        A'     VML           MM            MM     ,M                              MM            MM     ,M     Mb     dM          MM      \n" +
+                "                .JMML.    .JML.    YM      .JMML.       .JMML.        .JMML.    .AMA.   .AMMA.       .JMML.        .JMMmmmmMMM                            .JMML.        .JMMmmmmMMM     P\"Ybmmd\"         .JMML.    \n" +
+                "                                                                                                                                                                                                                   \n" +
+                "                                                                                                                                                                                                                   \n");
+    }
+
+
+
+    private void printCloseTest() {
+
+        System.out.println("\n" +
+                "                                                                                                                                                                                                       \n" +
+                "                                                                                                                                                                                                       \n" +
+                "                      .g8\"\"\"bgd     `7MMF'            .g8\"\"8q.        .M\"\"\"bgd     `7MMF'    `7MN.   `7MF'      .g8\"\"\"bgd                  MMP\"\"MM\"\"YMM     `7MM\"\"\"YMM       .M\"\"\"bgd     MMP\"\"MM\"\"YMM \n" +
+                "                    .dP'     `M       MM            .dP'    `YM.     ,MI    \"Y       MM        MMN.    M      .dP'     `M                  P'   MM   `7       MM    `7      ,MI    \"Y     P'   MM   `7 \n" +
+                "                    dM'       `       MM            dM'      `MM     `MMb.           MM        M YMb   M      dM'       `                       MM            MM   d        `MMb.              MM      \n" +
+                "                    MM                MM            MM        MM       `YMMNq.       MM        M  `MN. M      MM                                MM            MMmmMM          `YMMNq.          MM      \n" +
+                "                    MM.               MM      ,     MM.      ,MP     .     `MM       MM        M   `MM.M      MM.    `7MMF'                     MM            MM   Y  ,     .     `MM          MM      \n" +
+                "                    `Mb.     ,'       MM     ,M     `Mb.    ,dP'     Mb     dM       MM        M     YMM      `Mb.     MM                       MM            MM     ,M     Mb     dM          MM      \n" +
+                "                      `\"bmmmd'      .JMMmmmmMMM       `\"bmmd\"'       P\"Ybmmd\"      .JMML.    .JML.    YM        `\"bmmmdPY                     .JMML.        .JMMmmmmMMM     P\"Ybmmd\"         .JMML.    \n" +
+                "                                                                                                                                                                                                       \n" +
+                "                                                                                                                                                                                                       \n");
     }
 }
