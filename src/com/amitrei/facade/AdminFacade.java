@@ -19,33 +19,45 @@ public class AdminFacade extends ClientFacade {
     private final String ADMIN_EMAIL = "admin@admin.com";
     private final String ADMIN_PASSWORD = "admin";
 
-    public AdminFacade() {
-        super();
-
-
-    }
 
     @Override
     public boolean login(String email, String password) {
         return email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD);
     }
 
+
     public void addCompany(Company company) throws CompanyAlreadyExistsException {
-        if (companiesDAO.isCompanyExistsByName(company.getName()) || companiesDAO.isCompanyExistsByEmail(company.getEmail()))
-            throw new CompanyAlreadyExistsException();
+
+        List<Company> allCompanies = companiesDAO.getAllCompanies();
+        for (Company comp : allCompanies) {
+
+            if (comp.getName().equals(company.getName()) || comp.getEmail().equals(company.getEmail())) {
+                throw new CompanyAlreadyExistsException();
+
+            }
+
+        }
+
         companiesDAO.addCompany(company);
         company.setId(companiesDAO.getCompanyIDFromDB(company));
 
     }
 
     public void updateCompany(Company company) throws CompanyDoesNotExistsException, CannotChangeCompanyNameException {
+
         // Cannot change the company name
         if (!getOneCompany(company.getId()).getName().equals(company.getName()))
             throw new CannotChangeCompanyNameException();
+
+        else if (!companiesDAO.isCompanyExistsById(company.getId()))
+            throw new CompanyDoesNotExistsException();
+
         companiesDAO.updateCompany(company);
     }
 
     public void deleteCompany(int companyID) throws CompanyDoesNotExistsException {
+
+
         if (!companiesDAO.isCompanyExistsById(companyID)) throw new CompanyDoesNotExistsException();
         if (couponsDAO.getAllCouponsOfCompany(companyID).size() > 0) {
             couponsDAO.deleteCouponsPurchasesOfCompany(companyID);
