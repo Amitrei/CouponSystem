@@ -590,7 +590,6 @@ public class FullTest {
         }
 
         couponsDAO.deleteCouponPurchase(customerLoggedIn.getCustomerID(), coupon.getId());
-        myCoupon.setAmount(0);
         myCoupon.setEndDate(myDateUtil.expiredDate(10));
         try {
             companyLoggedIn.updateCoupon(myCoupon);
@@ -598,10 +597,19 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
         System.out.println();
-        System.out.println("CHANGING COUPON AMOUNT TO 0" + myCoupon);
+
+        Coupon newCoupon = new Coupon(351,Category.FOOD,"NO-AMOUNT-COUPON","blabla",myDateUtil.currentDate(),myDateUtil.expiredDate(10),0,99,"image");
+
+        try {
+            companyLoggedIn.addCoupon(newCoupon);
+        } catch (CouponAlreadyExistsException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("CHANGING COUPON AMOUNT TO 0" + newCoupon);
         System.out.println("TRYING TO PURCHASE");
         try {
-            customerLoggedIn.purchaseCoupon(myCoupon);
+            customerLoggedIn.purchaseCoupon(newCoupon);
         } catch (CouponDateExpiredException e) {
             System.out.println(e.getMessage());
         } catch (CouponNotFoundException e) {
@@ -612,19 +620,9 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
 
-        myCoupon.setAmount(100);
-        try {
-            companyLoggedIn.updateCoupon(myCoupon);
-        } catch (CouponNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
 
+        couponsDAO.deleteCoupon(newCoupon.getId());
 
-        try {
-            companyLoggedIn.deleteCoupon(coupon.getId());
-        } catch (CouponNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
 
 
         printTitle("ALL COUPONS OF CUSTOMERS");
@@ -658,6 +656,12 @@ public class FullTest {
 
         printTitle("CUSTOMER DETAILS");
         System.out.println(myCustomer);
+
+
+
+
+
+
 
 //            deleteDummyCoupons(coupon4,coupon5,coupon6);
 

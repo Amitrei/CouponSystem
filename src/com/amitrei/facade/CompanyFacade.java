@@ -28,6 +28,8 @@ public class CompanyFacade extends ClientFacade {
     }
 
     public void addCoupon(Coupon coupon) throws CouponAlreadyExistsException {
+
+
         if (couponsDAO.isCouponExists(coupon.getTitle(), coupon.getCompanyID()))
             throw new CouponAlreadyExistsException(coupon.getTitle());
         couponsDAO.addCoupon(coupon);

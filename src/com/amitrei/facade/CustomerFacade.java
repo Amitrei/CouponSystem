@@ -17,12 +17,16 @@ public class CustomerFacade extends ClientFacade {
     private int customerID;
 
     MyDateUtil myDateUtil = new MyDateUtil();
+
     @Override
     public boolean login(String email, String password) {
         if (customersDAO.isCustomerExists(email, password)) {
             this.customerID = customersDAO.getOneCustomer(email).getId();
+
             return true;
-        } else {
+        }
+
+        else {
             return false;
         }
     }
@@ -65,8 +69,8 @@ public class CustomerFacade extends ClientFacade {
     public Customer getCustomerDetails() {
         Customer myCustomer = customersDAO.getOneCustomer(this.customerID);
 
-        for(Coupon coupon : getCustomerCoupons()) {
-        myCustomer.getCoupons().add(coupon);
+        for (Coupon coupon : getCustomerCoupons()) {
+            myCustomer.getCoupons().add(coupon);
         }
         return myCustomer;
     }

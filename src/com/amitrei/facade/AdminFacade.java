@@ -57,11 +57,12 @@ public class AdminFacade extends ClientFacade {
 
     public void deleteCompany(int companyID) throws CompanyDoesNotExistsException {
 
+        List<Coupon> allCouponsOfCompany=couponsDAO.getAllCouponsOfCompany(companyID);
 
         if (!companiesDAO.isCompanyExistsById(companyID)) throw new CompanyDoesNotExistsException();
-        if (couponsDAO.getAllCouponsOfCompany(companyID).size() > 0) {
+        if (allCouponsOfCompany.size() > 0) {
             couponsDAO.deleteCouponsPurchasesOfCompany(companyID);
-            for (Coupon companyCoupon : couponsDAO.getAllCouponsOfCompany(companyID)) {
+            for (Coupon companyCoupon : allCouponsOfCompany) {
                 couponsDAO.deleteCoupon(companyCoupon.getId());
             }
         }
@@ -85,6 +86,7 @@ public class AdminFacade extends ClientFacade {
 
 
     public void updateCustomer(Customer customer) throws CustomerDoesNotExists, CustomerAlreadyExistsException {
+
         if (!customersDAO.isCustomerExists(customer.getId())) throw new CustomerDoesNotExists();
         if (customersDAO.isCustomerExists(customer.getEmail())) throw new CustomerAlreadyExistsException();
         customersDAO.updateCustomer(customer.getId(), customer);
