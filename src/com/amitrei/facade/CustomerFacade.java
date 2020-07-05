@@ -36,7 +36,7 @@ public class CustomerFacade extends ClientFacade {
         else if (customersDAO.isCustomerAlreadyHaveCoupon(this.customerID, coupon.getId()))
             throw new CustomerAlreadyPurchasedCouponException();
         else if (coupon.getAmount() <= 0) throw new CouponOutOfStockException();
-        else if (myDateUtil.isDatePassed(coupon.getEndDate())) throw new CouponDateExpiredException();
+        else if (myDateUtil.isDatePassed(coupon.getSQLEndDate())) throw new CouponDateExpiredException();
 
 
         else {

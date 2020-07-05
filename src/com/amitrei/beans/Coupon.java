@@ -37,10 +37,10 @@ public class Coupon {
      */
 
     public Coupon(int id, int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-        this.id=id;
+        this.id = id;
         this.companyID = companyID;
         // Converting int CategoryID --> Category
-        this.category = Category.values()[CategoryID-1];
+        this.category = Category.values()[CategoryID - 1];
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -50,16 +50,15 @@ public class Coupon {
         this.description = description;
 
     }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
-        if(this.id==0) {
+        if (this.id == 0) {
             this.id = id;
-        }
-        else
-        {
+        } else {
             System.out.println("Cannot change coupon ID");
         }
     }
@@ -73,10 +72,9 @@ public class Coupon {
     }
 
     public void setCompanyID(int companyID) {
-        if(this.companyID ==0) {
+        if (this.companyID == 0) {
             this.companyID = companyID;
-        }
-        else{
+        } else {
             System.out.println("Cannot change Company ID");
         }
 
@@ -98,7 +96,11 @@ public class Coupon {
         this.title = title;
     }
 
-    public java.sql.Date getStartDate() {
+    public java.util.Date getStartDate() {
+        return this.startDate;
+    }
+
+    public java.sql.Date getSQLStartDate() {
         return new java.sql.Date(startDate.getTime());
     }
 
@@ -106,7 +108,11 @@ public class Coupon {
         this.startDate = startDate;
     }
 
-    public java.sql.Date getEndDate() {
+    public java.util.Date getEndDate() {
+        return this.endDate;
+    }
+
+    public java.sql.Date getSQLEndDate() {
         return new java.sql.Date(endDate.getTime());
     }
 

@@ -28,8 +28,6 @@ import com.amitrei.facade.CustomerFacade;
 import com.amitrei.login.ClientType;
 import com.amitrei.login.LoginManager;
 import com.amitrei.utils.MyDateUtil;
-import jdk.swing.interop.SwingInterOpUtils;
-import org.w3c.dom.ls.LSOutput;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -61,7 +59,7 @@ public class FullTest {
         }
 
         System.out.println();
-        Coupon expiredCoupon = new Coupon(351, Category.FOOD, "EXPIRAED COUPON", "12% discount", myDateUtil.currentDate(), myDateUtil.expiredDate(-1), 5, 20, "image.png");
+        Coupon expiredCoupon = new Coupon(351, Category.FOOD, "EXPIRAED COUPON", "12% discount", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(-1), 5, 20, "image.png");
         System.out.println(" Adding expaired coupon from DB to check the daily job, the title: " + expiredCoupon.getTitle());
         couponsDAO.addCoupon(expiredCoupon);
         System.out.println(couponsDAO.getAllCoupons());
@@ -177,7 +175,7 @@ public class FullTest {
 
         printTitle("DELETE COMPANY");
         System.out.println("** ADDING COUPONS AND PURCHASES TO THE COMPANY ** ");
-        Coupon coupon = new Coupon(company.getId(), Category.WINTER, "Title", "Descreption", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.99, "Image.png");
+        Coupon coupon = new Coupon(company.getId(), Category.WINTER, "Title", "Descreption", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 100, 99.99, "Image.png");
         couponsDAO.addCoupon(coupon);
         try {
             couponsDAO.addCouponPurchase(62, couponsDAO.getCouponIDFromDB(coupon));
@@ -284,7 +282,7 @@ public class FullTest {
         } catch (CompanyAlreadyExistsException e) {
             System.out.println(e.getMessage());
         }
-        coupon = new Coupon(company0.getId(), Category.WINTER, "Title", "Descreption", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.99, "Image.png");
+        coupon = new Coupon(company0.getId(), Category.WINTER, "Title", "Descreption", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 100, 99.99, "Image.png");
         couponsDAO.addCoupon(coupon);
 
         try {
@@ -376,7 +374,7 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
         printTitle("COMPANY ADDING COUPON");
-        coupon = new Coupon(companyLoggedIn.getCompanyID(), Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.9, "image.png");
+        coupon = new Coupon(companyLoggedIn.getCompanyID(), Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 100, 99.9, "image.png");
         System.out.println("ADDING THIS COUPON: " + coupon);
         try {
             companyLoggedIn.addCoupon(coupon);
@@ -393,7 +391,7 @@ public class FullTest {
         }
         System.out.println();
         System.out.println("ADDING COUPON:");
-        Coupon coupon2 = new Coupon(904, Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.9, "image.png");
+        Coupon coupon2 = new Coupon(904, Category.WINTER, "testTitle", "MyDescription", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 100, 99.9, "image.png");
         System.out.println(coupon2);
         try {
             companyLoggedIn.addCoupon(coupon2);
@@ -514,7 +512,7 @@ public class FullTest {
         System.out.println("LOGGED IN SUCCSSESFULY");
         printTitle("PURCHASE COUPON");
 
-        coupon = new Coupon(351, Category.FOOD, "Test title", "Test description", myDateUtil.currentDate(), myDateUtil.expiredDate(10), 100, 99.9, "image.png");
+        coupon = new Coupon(351, Category.FOOD, "Test title", "Test description", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 100, 99.9, "image.png");
         try {
             companyLoggedIn.addCoupon(coupon);
         } catch (CouponAlreadyExistsException e) {
@@ -564,7 +562,7 @@ public class FullTest {
         }
 
 
-        myCoupon.setEndDate(myDateUtil.expiredDate(-1));
+        myCoupon.setEndDate(myDateUtil.expiredDateFromToday(-1));
         try {
             companyLoggedIn.updateCoupon(myCoupon);
         } catch (CouponNotFoundException e) {
@@ -590,7 +588,7 @@ public class FullTest {
         }
 
         couponsDAO.deleteCouponPurchase(customerLoggedIn.getCustomerID(), coupon.getId());
-        myCoupon.setEndDate(myDateUtil.expiredDate(10));
+        myCoupon.setEndDate(myDateUtil.expiredDateFromToday(10));
         try {
             companyLoggedIn.updateCoupon(myCoupon);
         } catch (CouponNotFoundException e) {
@@ -598,7 +596,7 @@ public class FullTest {
         }
         System.out.println();
 
-        Coupon newCoupon = new Coupon(351,Category.FOOD,"NO-AMOUNT-COUPON","blabla",myDateUtil.currentDate(),myDateUtil.expiredDate(10),0,99,"image");
+        Coupon newCoupon = new Coupon(351,Category.FOOD,"NO-AMOUNT-COUPON","blabla",myDateUtil.currentDate(),myDateUtil.expiredDateFromToday(10),0,99,"image");
 
         try {
             companyLoggedIn.addCoupon(newCoupon);

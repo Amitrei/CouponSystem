@@ -33,8 +33,8 @@ public class CouponsDBDAO implements CouponsDAO {
                 preparedStatement.setInt(2, coupon.getCategory().ordinal() + 1);
                 preparedStatement.setString(3, coupon.getTitle());
                 preparedStatement.setString(4, coupon.getDescription());
-                preparedStatement.setDate(5, coupon.getStartDate());
-                preparedStatement.setDate(6, coupon.getEndDate());
+                preparedStatement.setDate(5, coupon.getSQLStartDate());
+                preparedStatement.setDate(6, coupon.getSQLEndDate());
                 preparedStatement.setInt(7, coupon.getAmount());
                 preparedStatement.setDouble(8, coupon.getPrice());
                 preparedStatement.setString(9, coupon.getImage());
@@ -67,8 +67,8 @@ public class CouponsDBDAO implements CouponsDAO {
             preparedStatement.setInt(1, coupon.getCategory().ordinal() + 1);
             preparedStatement.setString(2,coupon.getTitle());
             preparedStatement.setString(3, coupon.getDescription());
-            preparedStatement.setDate(4, coupon.getStartDate());
-            preparedStatement.setDate(5, coupon.getEndDate());
+            preparedStatement.setDate(4, coupon.getSQLStartDate());
+            preparedStatement.setDate(5, coupon.getSQLEndDate());
             preparedStatement.setInt(6, coupon.getAmount());
             preparedStatement.setDouble(7, coupon.getPrice());
             preparedStatement.setString(8, coupon.getImage());
