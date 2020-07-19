@@ -1,7 +1,6 @@
 package com.amitrei.login;
 
-import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
-import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
+import com.amitrei.exceptions.DoesNotExistsException;
 import com.amitrei.facade.AdminFacade;
 import com.amitrei.facade.ClientFacade;
 import com.amitrei.facade.CompanyFacade;
@@ -17,7 +16,7 @@ public class LoginManager {
     }
 
 
-    public ClientFacade login(String email, String password, ClientType clientType) throws CompanyDoesNotExistsException, CustomerDoesNotExists {
+    public ClientFacade login(String email, String password, ClientType clientType) throws DoesNotExistsException, DoesNotExistsException {
 
         switch (clientType) {
 

@@ -1,23 +1,23 @@
 package com.amitrei.dao;
 
 import com.amitrei.beans.Coupon;
-import com.amitrei.exceptions.CouponsExceptions.CouponDateExpiredException;
-import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
+import com.amitrei.exceptions.IllegalActionException;
+
 
 import java.util.List;
 
 public interface CouponsDAO {
     void addCoupon(Coupon... coupon);
 
-    void updateCoupon(int couponID, Coupon coupon) throws CouponNotFoundException;
+    void updateCoupon(int couponID, Coupon coupon);
 
     void deleteCoupon(int... couponID);
 
     List<Coupon> getAllCoupons();
 
-    Coupon getOneCoupon(int couponID) throws CouponNotFoundException;
+    Coupon getOneCoupon(int couponID);
 
-    void addCouponPurchase(int customerID, int couponID) throws CouponNotFoundException, CouponDateExpiredException;
+    void addCouponPurchase(int customerID, int couponID);
 
     void deleteCouponPurchase(int customerID, int couponID);
 

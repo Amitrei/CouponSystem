@@ -1,13 +1,10 @@
 package com.amitrei.dbdao;
 
 import com.amitrei.beans.Category;
-import com.amitrei.beans.Company;
 import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
 import com.amitrei.dao.CustomersDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
-import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

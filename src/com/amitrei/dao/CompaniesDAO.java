@@ -1,8 +1,8 @@
 package com.amitrei.dao;
 
 import com.amitrei.beans.Company;
-import com.amitrei.exceptions.CompanyExceptions.CompanyAlreadyExistsException;
-import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
+
+import com.amitrei.exceptions.DoesNotExistsException;
 
 import java.util.List;
 
@@ -12,12 +12,12 @@ public interface CompaniesDAO {
     Boolean isCompanyExistsById(int companyID);
     Boolean isCompanyExists(String email, String password);
 
-    void addCompany(Company company) throws CompanyAlreadyExistsException;
-    void updateCompany(Company company) throws CompanyDoesNotExistsException;
-    void deleteCompany(int companyID) throws CompanyDoesNotExistsException;
+    void addCompany(Company company);
+    void updateCompany(Company company);
+    void deleteCompany(int companyID);
     List<Company> getAllCompanies();
-    Company getOneCompany(int companyID) throws CompanyDoesNotExistsException;
-    Company getOneCompany(String companyEmail) throws CompanyDoesNotExistsException;
+    Company getOneCompany(int companyID);
+    Company getOneCompany(String companyEmail);
 
     int getCompanyIDFromDB(Company company);
 }

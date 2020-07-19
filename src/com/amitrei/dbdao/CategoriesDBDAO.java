@@ -3,7 +3,7 @@ package com.amitrei.dbdao;
 import com.amitrei.beans.Category;
 import com.amitrei.dao.CategoriesDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CategoryExceptions.CategoryAlreadyExistsException;
+import com.amitrei.exceptions.AlreadyExistsException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,10 +17,13 @@ public class CategoriesDBDAO implements CategoriesDAO {
     public void loadOneCategories(Category category) {
 
         if (isCategoryExists(category)) try {
-            throw new CategoryAlreadyExistsException(category.toString());
-        } catch (CategoryAlreadyExistsException e) {
+            throw new AlreadyExistsException(category.toString());
+
+
+        } catch (AlreadyExistsException e) {
             System.out.println(e.getMessage());
             return;
+
         }
 
         Connection connection = null;
@@ -55,9 +58,9 @@ public class CategoriesDBDAO implements CategoriesDAO {
             String sql = "INSERT INTO `couponsystem`.`categories` (`ID`, `NAME`) VALUES (?, ?);";
             for (Category category : Category.values()) {
                 try {
-                    if (isCategoryExists(category)) throw new CategoryAlreadyExistsException(category.toString());
+                    if (isCategoryExists(category)) throw new AlreadyExistsException(category.toString());
                 }
-                catch (CategoryAlreadyExistsException e) {
+                catch (AlreadyExistsException e) {
                     System.out.println(e.getMessage());
                     continue;
                 }

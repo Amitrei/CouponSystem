@@ -4,8 +4,6 @@ import com.amitrei.beans.Company;
 import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CompaniesDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -271,7 +269,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public Company getOneCompany(int companyID) throws CompanyDoesNotExistsException {
+    public Company getOneCompany(int companyID)  {
 
         Company company = null;
         try {
@@ -303,7 +301,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public Company getOneCompany(String companyEmail) throws CompanyDoesNotExistsException {
+    public Company getOneCompany(String companyEmail)  {
         Company company = null;
 
         try {

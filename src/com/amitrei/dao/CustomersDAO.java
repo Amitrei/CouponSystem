@@ -3,7 +3,7 @@ package com.amitrei.dao;
 import com.amitrei.beans.Category;
 import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
-import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyExistsException;
+import com.amitrei.exceptions.AlreadyExistsException;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface CustomersDAO {
     Boolean isCustomerExists(String email);
     Boolean isCustomerExists(String email,String password);
     Boolean isCustomerExists(int customerID);
-    void addCustomer(Customer customer) throws CustomerAlreadyExistsException;
+    void addCustomer(Customer customer) throws AlreadyExistsException;
     void updateCustomer(int customerID,Customer customer);
     void deleteCustomer(int customerID);
     List<Customer> getAllCustomers();

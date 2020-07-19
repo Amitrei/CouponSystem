@@ -28,6 +28,11 @@ public class CouponExpirationDailyJob implements Runnable {
                     }
                 }
 
+            try {
+                Thread.sleep(1000*60*60*24);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
         }
     }

@@ -6,8 +6,8 @@ import com.amitrei.dao.CustomersDAO;
 import com.amitrei.dbdao.CompaniesDBDAO;
 import com.amitrei.dbdao.CouponsDBDAO;
 import com.amitrei.dbdao.CustomersDBDAO;
-import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
-import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
+import com.amitrei.exceptions.DoesNotExistsException;
+
 
 public abstract class ClientFacade {
     protected CompaniesDAO companiesDAO;
@@ -19,7 +19,7 @@ public abstract class ClientFacade {
         customersDAO = new CustomersDBDAO();
     }
 
-    public abstract boolean login(String email, String password) throws CompanyDoesNotExistsException, CustomerDoesNotExists;
+    public abstract boolean login(String email, String password) throws DoesNotExistsException;
 
 
 }

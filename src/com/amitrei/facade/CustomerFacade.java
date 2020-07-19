@@ -3,12 +3,9 @@ package com.amitrei.facade;
 import com.amitrei.beans.Category;
 import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
-import com.amitrei.exceptions.CompanyExceptions.CompanyDoesNotExistsException;
-import com.amitrei.exceptions.CouponsExceptions.CouponDateExpiredException;
-import com.amitrei.exceptions.CouponsExceptions.CouponNotFoundException;
-import com.amitrei.exceptions.CouponsExceptions.CouponOutOfStockException;
-import com.amitrei.exceptions.CustomerExceptions.CustomerAlreadyPurchasedCouponException;
-import com.amitrei.exceptions.CustomerExceptions.CustomerDoesNotExists;
+
+import com.amitrei.exceptions.DoesNotExistsException;
+import com.amitrei.exceptions.IllegalActionException;
 import com.amitrei.utils.MyDateUtil;
 
 import java.util.List;
@@ -19,7 +16,7 @@ public class CustomerFacade extends ClientFacade {
     MyDateUtil myDateUtil = new MyDateUtil();
 
     @Override
-    public boolean login(String email, String password) {
+    public boolean login(String email, String password) throws DoesNotExistsException {
         if (customersDAO.isCustomerExists(email, password)) {
             this.customerID = customersDAO.getOneCustomer(email).getId();
 
@@ -27,16 +24,16 @@ public class CustomerFacade extends ClientFacade {
         }
 
         else {
-            return false;
+            throw new DoesNotExistsException("incorrect login details, customer ");
         }
     }
 
-    public void purchaseCoupon(Coupon coupon) throws CouponDateExpiredException, CouponNotFoundException, CustomerAlreadyPurchasedCouponException, CouponOutOfStockException {
-        if (!couponsDAO.isCouponExists(coupon.getId())) throw new CouponNotFoundException();
+    public void purchaseCoupon(Coupon coupon) throws DoesNotExistsException, IllegalActionException {
+        if (!couponsDAO.isCouponExists(coupon.getId())) throw new DoesNotExistsException("Coupon");
         else if (customersDAO.isCustomerAlreadyHaveCoupon(this.customerID, coupon.getId()))
-            throw new CustomerAlreadyPurchasedCouponException();
-        else if (coupon.getAmount() <= 0) throw new CouponOutOfStockException();
-        else if (myDateUtil.isDatePassed(coupon.getSQLEndDate())) throw new CouponDateExpiredException();
+            throw new IllegalActionException("Customer already purchased this coupon");
+        else if (coupon.getAmount() <= 0) throw new IllegalActionException("Coupon out of stock");
+        else if (myDateUtil.isDatePassed(coupon.getSQLEndDate())) throw new IllegalActionException("Coupon already expired");
 
 
         else {
