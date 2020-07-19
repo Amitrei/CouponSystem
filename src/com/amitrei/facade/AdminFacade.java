@@ -76,7 +76,11 @@ public class AdminFacade extends ClientFacade {
     public void addCustomer(Customer customer) throws AlreadyExistsException {
         if (customersDAO.isCustomerExists(customer.getEmail())) throw new AlreadyExistsException("Customer");
         customersDAO.addCustomer(customer);
-        customer.setId(customersDAO.getCustomerIDFromDB(customer));
+        try {
+            customer.setId(customersDAO.getCustomerIDFromDB(customer));
+        } catch (IllegalActionException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 

@@ -83,10 +83,6 @@ public class FullTest {
         System.out.println(couponsDAO.getAllCoupons());
 
 
-
-
-
-
         adminTestTitle();
         printTitle("ADMINISTRATOR LOGIN");
         ClientFacade LoggedInAsAdmin = null;
@@ -178,7 +174,7 @@ public class FullTest {
         Coupon coupon = new Coupon(company.getId(), Category.WINTER, "Title", "Descreption", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 100, 99.99, "Image.png");
         couponsDAO.addCoupon(coupon);
 
-            couponsDAO.addCouponPurchase(62, couponsDAO.getCouponIDFromDB(coupon));
+        couponsDAO.addCouponPurchase(62, couponsDAO.getCouponIDFromDB(coupon));
 
         System.out.println();
         System.out.println("DELETING COMPANY BY COMPANY ID:" + company.getId());
@@ -256,7 +252,11 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
         System.out.println("TRYING CHANGING ID:");
-        customer.setId(123);
+        try {
+            customer.setId(123);
+        } catch (IllegalActionException e) {
+            System.out.println(e.getMessage());
+        }
 
 
         printTitle("DELETING CUSTOMER");
@@ -277,7 +277,7 @@ public class FullTest {
         couponsDAO.addCoupon(coupon);
 
 
-            couponsDAO.addCouponPurchase(customer.getId(), couponsDAO.getCouponIDFromDB(coupon));
+        couponsDAO.addCouponPurchase(customer.getId(), couponsDAO.getCouponIDFromDB(coupon));
 
 
         System.out.println("PURCHASE ADDED SUCCSESSFULY: " + customersDAO.getCustomerCoupons(customer.getId()));
@@ -326,15 +326,13 @@ public class FullTest {
         companyTestTitle();
         printTitle("COMPANY LOGIN");
 
-            System.out.println("MY TESTING COMPANY:" + adminFacade.getOneCompany(351));
-
+        System.out.println("MY TESTING COMPANY:" + adminFacade.getOneCompany(351));
 
 
         System.out.println("### TRYING TO LOG-IN WITH WRONG PASSWORD ###");
         try {
             System.out.println(LoginManager.getInstance().login("testCompany@gmail.com", "WrongPassword", ClientType.Company));
-        }
-        catch (DoesNotExistsException e) {
+        } catch (DoesNotExistsException e) {
             System.out.println(e.getMessage());
         }
 
@@ -391,7 +389,13 @@ public class FullTest {
         coupon.setId(123);
         System.out.println();
         System.out.println("TRYING TO UPDATE COMPANY ID:");
-        coupon.setCompanyID(123);
+        System.out.println("cannot update company name ( there is no setter )");
+        try {
+            companyLoggedIn.updateCoupon(coupon);
+        } catch (DoesNotExistsException | IllegalActionException e) {
+
+            System.out.println(e.getMessage());
+        }
         System.out.println();
 
         System.out.println("UPDATING COUPON DETAILS:");
@@ -404,7 +408,7 @@ public class FullTest {
         System.out.println("BEFORE UPDATING COUPON FROM DB:");
         System.out.println(companyLoggedIn.getCompanyCoupons());
 
-            couponsDAO.updateCoupon(coupon.getId(), coupon);
+        couponsDAO.updateCoupon(coupon.getId(), coupon);
 
         System.out.println("AFTER UPDATING COUPON FROM DB:");
         System.out.println(companyLoggedIn.getCompanyCoupons());
@@ -414,7 +418,7 @@ public class FullTest {
 
         System.out.println("### ADDING PURCHASE TO THE COUPON ###");
 
-            couponsDAO.addCouponPurchase(62, coupon.getId());
+        couponsDAO.addCouponPurchase(62, coupon.getId());
 
 
         System.out.println("DELETING COUPON " + coupon);
@@ -487,20 +491,16 @@ public class FullTest {
         coupon = new Coupon(351, Category.FOOD, "Test title", "Test description", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 100, 99.9, "image.png");
 
 
-
         try {
             companyLoggedIn.addCoupon(coupon);
         } catch (AlreadyExistsException e) {
             System.out.println(e.getMessage());
         }
 
-            Coupon myCoupon = couponsDAO.getOneCoupon(coupon.getId());
+        Coupon myCoupon = couponsDAO.getOneCoupon(coupon.getId());
 
 
-
-
-
-            System.out.println("TRYING TO PURCHASE THIS COUPON" + myCoupon);
+        System.out.println("TRYING TO PURCHASE THIS COUPON" + myCoupon);
 
 
         try {
@@ -508,8 +508,7 @@ public class FullTest {
         } catch (IllegalActionException e) {
             System.out.println(e.getMessage());
 
-        }
-        catch (DoesNotExistsException e) {
+        } catch (DoesNotExistsException e) {
             System.out.println(e.getMessage());
         }
 
@@ -533,6 +532,8 @@ public class FullTest {
             companyLoggedIn.updateCoupon(myCoupon);
         } catch (DoesNotExistsException e) {
             System.out.println(e.getMessage());
+        } catch (IllegalActionException e) {
+            System.out.println(e.getMessage());
         }
 
 
@@ -553,12 +554,12 @@ public class FullTest {
         myCoupon.setEndDate(myDateUtil.expiredDateFromToday(10));
         try {
             companyLoggedIn.updateCoupon(myCoupon);
-        } catch (DoesNotExistsException e) {
+        } catch (DoesNotExistsException | IllegalActionException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
 
-        Coupon newCoupon = new Coupon(351,Category.FOOD,"NO-AMOUNT-COUPON","blabla",myDateUtil.currentDate(),myDateUtil.expiredDateFromToday(10),0,99,"image");
+        Coupon newCoupon = new Coupon(351, Category.FOOD, "NO-AMOUNT-COUPON", "blabla", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(10), 0, 99, "image");
 
         try {
             companyLoggedIn.addCoupon(newCoupon);
@@ -581,26 +582,8 @@ public class FullTest {
         couponsDAO.deleteCoupon(myCoupon.getId());
 
 
-
         printTitle("ALL COUPONS OF CUSTOMERS");
         System.out.println("### MAKING DUMMY COUPONS AND PURCHASING THEM###");
-//            Coupon coupon4=new Coupon(351,Category.FOOD,"DummyTitle1","DummyDescription1",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,30,"DummyImage1.png");
-//            Coupon coupon5=new Coupon(351,Category.Electricity,"DummyTitle2","DummyDescription2",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,60,"DummyImage2.png");
-//            Coupon coupon6=new Coupon(351,Category.Electricity,"DummyTitle3","DummyDescription3",myDateUtil.currentDate(),myDateUtil.expiredDate(10),10,90,"DummyImage3.png");
-//            addDummyCoupons(coupon4,coupon5,coupon6);
-//            try {
-//                customerLoggedIn.purchaseCoupon(coupon4);
-//                customerLoggedIn.purchaseCoupon(coupon5);
-//                customerLoggedIn.purchaseCoupon(coupon6);
-//            } catch (IllegalActionException e) {
-//                System.out.println(e.getMessage());
-//            } catch (DoesNotExistsException e) {
-//                System.out.println(e.getMessage());
-//            } catch (IllegalActionException e) {
-//                System.out.println(e.getMessage());
-//            } catch (IllegalActionException e) {
-//                System.out.println(e.getMessage());
-//            }
         System.out.println("ALL COUPONS OF CUSTOMER");
         System.out.println(customerLoggedIn.getCustomerCoupons());
         System.out.println();
@@ -617,12 +600,6 @@ public class FullTest {
 
 
 
-
-
-
-//            deleteDummyCoupons(coupon4,coupon5,coupon6);
-
-
         printCloseTest();
         System.out.println("### Shuting down daily job ###");
         dailyJob.stopIt();
@@ -635,15 +612,6 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
 
-
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//        } catch (InterruptedException e) {
-//            System.out.println(e.getMessage());
-//        } catch (DoesNotExistsException e) {
-//            System.out.println(e.getMessage());
-//        } catch (DoesNotExistsException e) {
-//            System.out.println(e.getMessage());
     }
 
 
@@ -653,8 +621,6 @@ public class FullTest {
         System.out.println();
 
     }
-
-
 
 
     private void addDummyCoupons(Coupon coupon1, Coupon coupon2, Coupon coupon3) {
@@ -708,7 +674,7 @@ public class FullTest {
 
         } catch (DoesNotExistsException e) {
             e.printStackTrace();
-        }  catch (AlreadyExistsException e) {
+        } catch (AlreadyExistsException e) {
             e.printStackTrace();
         }
 

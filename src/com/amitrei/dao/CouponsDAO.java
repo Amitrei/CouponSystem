@@ -1,7 +1,6 @@
 package com.amitrei.dao;
 
 import com.amitrei.beans.Coupon;
-import com.amitrei.exceptions.IllegalActionException;
 
 
 import java.util.List;
@@ -25,7 +24,7 @@ public interface CouponsDAO {
 
     boolean isCouponExists(String couponTitle, int companyID);
 
-    public List<Coupon> getAllCouponsOfCompany(int companyID);
+     List<Coupon> getAllCouponsOfCompany(int companyID);
 
     void deleteCouponsPurchasesOfCompany(int couponCompanyID);
 

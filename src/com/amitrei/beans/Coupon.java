@@ -71,14 +71,6 @@ public class Coupon {
         return description;
     }
 
-    public void setCompanyID(int companyID) {
-        if (this.companyID == 0) {
-            this.companyID = companyID;
-        } else {
-            System.out.println("Cannot change Company ID");
-        }
-
-    }
 
     public Category getCategory() {
         return category;

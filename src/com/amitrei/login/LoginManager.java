@@ -16,7 +16,7 @@ public class LoginManager {
     }
 
 
-    public ClientFacade login(String email, String password, ClientType clientType) throws DoesNotExistsException, DoesNotExistsException {
+    public ClientFacade login(String email, String password, ClientType clientType) throws DoesNotExistsException {
 
         switch (clientType) {
 

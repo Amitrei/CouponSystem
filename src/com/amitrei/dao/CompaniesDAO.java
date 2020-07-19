@@ -7,8 +7,7 @@ import com.amitrei.exceptions.DoesNotExistsException;
 import java.util.List;
 
 public interface CompaniesDAO {
-    Boolean isCompanyExistsByEmail(String email);
-    Boolean isCompanyExistsByName(String name);
+
     Boolean isCompanyExistsById(int companyID);
     Boolean isCompanyExists(String email, String password);
 

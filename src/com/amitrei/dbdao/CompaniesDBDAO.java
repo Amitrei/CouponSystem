@@ -18,60 +18,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
      * 0 for non-exists company in the Database
      */
 
-    @Override
-    public Boolean isCompanyExistsByEmail(String email) {
-        try {
-            int isExists = -99;
-            connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL` =? LIMIT 1)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, email);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                isExists = resultSet.getInt(1);
-            }
-            return isExists > 0;
 
-        } catch (InterruptedException | SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                ConnectionPool.getInstance().restoreConnection(connection);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            connection = null;
-        }
-        return false;
-
-    }
-
-    public Boolean isCompanyExistsByName(String name) {
-        try {
-            int isExists = -99;
-            connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `NAME` =? LIMIT 1)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                isExists = resultSet.getInt(1);
-            }
-            return isExists > 0;
-
-        } catch (InterruptedException | SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                ConnectionPool.getInstance().restoreConnection(connection);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            connection = null;
-        }
-        return false;
-
-    }
 
     @Override
     public Boolean isCompanyExists(String companyEmail, String companyPassword) {

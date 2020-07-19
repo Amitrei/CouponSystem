@@ -1,5 +1,7 @@
 package com.amitrei.beans;
 
+import com.amitrei.exceptions.IllegalActionException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,13 +44,14 @@ public class Customer {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id) throws IllegalActionException {
 
         if (this.id == 0) {
             this.id = id;
         }
         else{
-            System.out.println("Cannot change customer ID");
+
+throw new IllegalActionException("Cannot change customer ID");
         }
     }
 
