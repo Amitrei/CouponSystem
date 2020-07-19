@@ -25,7 +25,7 @@ public class DBManager {
     }
 
 
-    public static void createTable(String query) {
+    protected static void createTable(String query) {
 
         try {
             connection = ConnectionPool.getInstance().getConnection();

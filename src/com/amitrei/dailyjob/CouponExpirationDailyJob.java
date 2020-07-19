@@ -3,13 +3,13 @@ package com.amitrei.dailyjob;
 import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CouponsDAO;
 import com.amitrei.dbdao.CouponsDBDAO;
-import com.amitrei.utils.MyDateUtil;
+import com.amitrei.utils.DateUtil;
 
 import java.util.List;
 
 public class CouponExpirationDailyJob implements Runnable {
     CouponsDAO couponsDAO = new CouponsDBDAO();
-    MyDateUtil myDateUtil = new MyDateUtil();
+    DateUtil myDateUtil = new DateUtil();
     private  volatile  Boolean quit = false;
 
     @Override

@@ -6,14 +6,14 @@ import com.amitrei.beans.Customer;
 
 import com.amitrei.exceptions.DoesNotExistsException;
 import com.amitrei.exceptions.IllegalActionException;
-import com.amitrei.utils.MyDateUtil;
+import com.amitrei.utils.DateUtil;
 
 import java.util.List;
 
 public class CustomerFacade extends ClientFacade {
     private int customerID;
 
-    MyDateUtil myDateUtil = new MyDateUtil();
+    DateUtil myDateUtil = new DateUtil();
 
     @Override
     public boolean login(String email, String password) throws DoesNotExistsException {

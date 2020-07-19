@@ -1,6 +1,7 @@
 package com.amitrei;
 
 import com.amitrei.test.FullTest;
+import com.amitrei.test.FullTestTable;
 
 public class program {
 

@@ -1,7 +1,6 @@
 package com.amitrei.dbdao;
 
 import com.amitrei.beans.Company;
-import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CompaniesDAO;
 import com.amitrei.db.ConnectionPool;
 import java.sql.*;
@@ -10,20 +9,24 @@ import java.util.List;
 
 public class CompaniesDBDAO implements CompaniesDAO {
 
+    public static final String IF_EXISTS_BY_EMAIL_AND_PASS = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL`=? AND `PASSWORD`=? LIMIT 1)";
+    public static final String IS_COMPANY_EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `ID`=? LIMIT 1)";
+    public static final String ADD_COMPANY = "INSERT INTO `couponsystem`.`companies` (`NAME`, `EMAIL`,`PASSWORD`) VALUES (?,?,?);";
+    public static final String GET_ID_OF_COMPANY = "SELECT * FROM `couponsystem`.`companies` WHERE `NAME`=?";
+    public static final String UPDATE_COMPANY = "UPDATE `couponsystem`.`companies` SET  `EMAIL` = ?, `PASSWORD` = ? WHERE (`ID` = ?)";
+    public static final String DELETE_COMPANY = "DELETE FROM `couponsystem`.`companies` WHERE ID=?";
+    public static final String GET_ALL_COMPANIES = "SELECT * FROM `couponsystem`.`companies`";
+    public static final String GET_ONE_COMPANY_BY_ID = "SELECT * FROM `couponsystem`.`companies` WHERE ID=?";
+    public static final String GET_ONE_COMPANY_BY_EMAIL = "SELECT * FROM `couponsystem`.`companies` WHERE `EMAIL`=?";
     private Connection connection = null;
 
-    /**
-     * Using SELECT EXISTS LIMIT 1 in order to get the results:
-     * 1 for exists company in the Database
-     * 0 for non-exists company in the Database
-     */
 
     @Override
     public Boolean isCompanyExists(String companyEmail, String companyPassword) {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL`=? AND `PASSWORD`=? LIMIT 1)";
+            String sql = IF_EXISTS_BY_EMAIL_AND_PASS;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, companyEmail);
             preparedStatement.setString(2, companyPassword);
@@ -50,7 +53,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `ID`=? LIMIT 1)";
+            String sql = IS_COMPANY_EXISTS_BY_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -80,7 +83,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "INSERT INTO `couponsystem`.`companies` (`NAME`, `EMAIL`,`PASSWORD`) VALUES (?,?,?);";
+            String sql = ADD_COMPANY;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, company.getName());
             preparedStatement.setString(2, company.getEmail());
@@ -107,7 +110,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
         int result = -1;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`companies` WHERE `NAME`=?";
+            String sql = GET_ID_OF_COMPANY;
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             preparedStatement.setString(1, company.getName());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -137,7 +140,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
         try {
 
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "UPDATE `couponsystem`.`companies` SET  `EMAIL` = ?, `PASSWORD` = ? WHERE (`ID` = ?)";
+            String sql = UPDATE_COMPANY;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, company.getEmail());
             preparedStatement.setString(2, company.getPassword());
@@ -163,7 +166,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "DELETE FROM `couponsystem`.`companies` WHERE ID=?";
+            String sql = DELETE_COMPANY;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             preparedStatement.executeUpdate();
@@ -186,7 +189,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
         List<Company> companiesList = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`companies`";
+            String sql = GET_ALL_COMPANIES;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -219,7 +222,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
         Company company = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`companies` WHERE ID=?";
+            String sql = GET_ONE_COMPANY_BY_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -251,7 +254,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`companies` WHERE `EMAIL`=?";
+            String sql = GET_ONE_COMPANY_BY_EMAIL;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, companyEmail);
             ResultSet resultSet = preparedStatement.executeQuery();

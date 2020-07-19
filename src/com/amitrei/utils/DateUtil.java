@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class MyDateUtil {
+public class DateUtil {
 
 
     public java.sql.Date expiredDateFromToday (int daysFromCurrentDate) {

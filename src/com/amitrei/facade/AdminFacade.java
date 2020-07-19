@@ -27,7 +27,7 @@ public class AdminFacade extends ClientFacade {
         for (Company comp : allCompanies) {
 
             if (comp.getName().equals(company.getName()) || comp.getEmail().equals(company.getEmail())) {
-                throw new AlreadyExistsException("company name");
+                throw new AlreadyExistsException("company name or email");
 
             }
 

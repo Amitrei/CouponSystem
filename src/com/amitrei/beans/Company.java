@@ -15,7 +15,7 @@ public class Company {
     private List<Coupon> coupons = new ArrayList<>();
 
 
-    public Company(String name, String email, String password) throws SQLException, InterruptedException {
+    public Company(String name, String email, String password){
         this.name = name;
         this.email = email;
         this.password = password;
@@ -24,7 +24,7 @@ public class Company {
 
     // CTOR for CompaniesDBDAO - getAllCompanies
 
-    public Company(int id, String name, String email, String password) throws SQLException, InterruptedException {
+    public Company(int id, String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;

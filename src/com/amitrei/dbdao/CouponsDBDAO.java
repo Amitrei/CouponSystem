@@ -1,10 +1,9 @@
 package com.amitrei.dbdao;
 
-import com.amitrei.beans.Company;
 import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CouponsDAO;
 import com.amitrei.db.ConnectionPool;
-import com.amitrei.utils.MyDateUtil;
+import com.amitrei.utils.DateUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,8 +11,21 @@ import java.util.List;
 
 
 public class CouponsDBDAO implements CouponsDAO {
+    public static final String ADD_COUPON = "INSERT INTO `couponsystem`.`coupons` (`COMPANY_ID`, `CATEGORY_ID`,`TITLE`,`DESCRIPTION`,`START_DATE`,`END_DATE`,`AMOUNT`,`PRICE`,`IMAGE`) VALUES (?,?,?,?,?,?,?,?,?);";
+    public static final String UPDATE_COUPON = "UPDATE `couponsystem`.`coupons` SET  `CATEGORY_ID` = ?,`TITLE`= ? ,`DESCRIPTION` = ?,`START_DATE`=?,`END_DATE`=?,`AMOUNT`=?,`PRICE`=?,`IMAGE`=?  WHERE (`ID` = ?)";
+    public static final String DELETE_COUPONS_PURCHASES_OF_COMPANY_BY_ID = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`COUPON_ID` = ?)";
+    public static final String ALL_COMPANIES_BY_ID = "SELECT * FROM `couponsystem`.`coupons` WHERE (`COMPANY_ID`=?)";
+    public static final String DELETE_COUPON = "DELETE FROM `couponsystem`.`coupons` WHERE ID=?";
+    public static final String GET_ALL_COUPONS = "SELECT * FROM `couponsystem`.`coupons`";
+    public static final String GET_COUPON_BY_ID = "SELECT * FROM `couponsystem`.`coupons` WHERE `ID`=?";
+    public static final String ADD_COUPON_PURCHASE = "INSERT INTO `couponsystem`.`customers_vs_coupons` (`CUSTOMER_ID`, `COUPON_ID`) VALUES (?,?);";
+    public static final String DELETE_COUPON_PURCHASE = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`CUSTOMER_ID` = ?) and (`COUPON_ID` = ?);";
+    public static final String DELETE_COUPON_PURCHASE_BY_COUPONID = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`COUPON_ID` = ?);";
+    public static final String IS_COUPON_EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`coupons` WHERE `ID`=? LIMIT 1)";
+    public static final String IS_COUPON_EXISTS_BY_TITLE_AND_ID = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`coupons` WHERE `COMPANY_ID`=? AND `TITLE`=? LIMIT 1)";
+    public static final String GET_COUPON_ID = "SELECT * FROM `couponsystem`.`coupons` WHERE `TITLE`=? AND `COMPANY_ID`=?";
     private Connection connection = null;
-    MyDateUtil dateUtil = new MyDateUtil();
+    DateUtil dateUtil = new DateUtil();
 
 
     @Override
@@ -27,7 +39,7 @@ public class CouponsDBDAO implements CouponsDAO {
             for (Coupon coupon : coupons) {
 
 
-                String sql = "INSERT INTO `couponsystem`.`coupons` (`COMPANY_ID`, `CATEGORY_ID`,`TITLE`,`DESCRIPTION`,`START_DATE`,`END_DATE`,`AMOUNT`,`PRICE`,`IMAGE`) VALUES (?,?,?,?,?,?,?,?,?);";
+                String sql = ADD_COUPON;
                 PreparedStatement preparedStatement = connection2.prepareStatement(sql);
                 preparedStatement.setInt(1, coupon.getCompanyID());
                 preparedStatement.setInt(2, coupon.getCategory().ordinal() + 1);
@@ -62,7 +74,7 @@ public class CouponsDBDAO implements CouponsDAO {
         try {
 
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "UPDATE `couponsystem`.`coupons` SET  `CATEGORY_ID` = ?,`TITLE`= ? ,`DESCRIPTION` = ?,`START_DATE`=?,`END_DATE`=?,`AMOUNT`=?,`PRICE`=?,`IMAGE`=?  WHERE (`ID` = ?)";
+            String sql = UPDATE_COUPON;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, coupon.getCategory().ordinal() + 1);
             preparedStatement.setString(2, coupon.getTitle());
@@ -92,10 +104,11 @@ public class CouponsDBDAO implements CouponsDAO {
         Connection connection2 = null;
 
         // Looping over an ArrayList of all coupons of the same company
+
         try {
             for (Coupon coupon : getAllCouponsOfCompany(couponCompanyID)) {
                 connection2 = ConnectionPool.getInstance().getConnection();
-                String sql = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`COUPON_ID` = ?)";
+                String sql = DELETE_COUPONS_PURCHASES_OF_COMPANY_BY_ID;
                 PreparedStatement preparedStatement = connection2.prepareStatement(sql);
                 preparedStatement.setInt(1, coupon.getId());
                 preparedStatement.executeUpdate();
@@ -117,7 +130,7 @@ public class CouponsDBDAO implements CouponsDAO {
         List<Coupon> couponsList = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`coupons` WHERE (`COMPANY_ID`=?)";
+            String sql = ALL_COMPANIES_BY_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -155,7 +168,7 @@ public class CouponsDBDAO implements CouponsDAO {
         Connection connection2 = null;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "DELETE FROM `couponsystem`.`coupons` WHERE ID=?";
+            String sql = DELETE_COUPON;
 
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             for (int couponId : couponsID) {
@@ -182,7 +195,7 @@ public class CouponsDBDAO implements CouponsDAO {
         List<Coupon> couponsList = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`coupons`";
+            String sql = GET_ALL_COUPONS;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -220,7 +233,7 @@ public class CouponsDBDAO implements CouponsDAO {
         try {
             Coupon coupon = null;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`coupons` WHERE `ID`=?";
+            String sql = GET_COUPON_BY_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, couponID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -258,7 +271,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "INSERT INTO `couponsystem`.`customers_vs_coupons` (`CUSTOMER_ID`, `COUPON_ID`) VALUES (?,?);";
+            String sql = ADD_COUPON_PURCHASE;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             preparedStatement.setInt(2, couponID);
@@ -281,7 +294,7 @@ public class CouponsDBDAO implements CouponsDAO {
     public void deleteCouponPurchase(int customerID, int couponID) {
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`CUSTOMER_ID` = ?) and (`COUPON_ID` = ?);";
+            String sql = DELETE_COUPON_PURCHASE;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             preparedStatement.setInt(2, couponID);
@@ -305,7 +318,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
 
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`COUPON_ID` = ?);";
+            String sql = DELETE_COUPON_PURCHASE_BY_COUPONID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, couponID);
             preparedStatement.executeUpdate();
@@ -327,7 +340,7 @@ public class CouponsDBDAO implements CouponsDAO {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`coupons` WHERE `ID`=? LIMIT 1)";
+            String sql = IS_COUPON_EXISTS_BY_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, couponID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -354,7 +367,7 @@ public class CouponsDBDAO implements CouponsDAO {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`coupons` WHERE `COMPANY_ID`=? AND `TITLE`=? LIMIT 1)";
+            String sql = IS_COUPON_EXISTS_BY_TITLE_AND_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, companyID);
             preparedStatement.setString(2, couponTitle);
@@ -383,7 +396,7 @@ public class CouponsDBDAO implements CouponsDAO {
         int result = -1;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`coupons` WHERE `TITLE`=? AND `COMPANY_ID`=?";
+            String sql = GET_COUPON_ID;
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             preparedStatement.setString(1, coupon.getTitle());
             preparedStatement.setInt(2, coupon.getCompanyID());

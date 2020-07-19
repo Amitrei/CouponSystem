@@ -15,6 +15,20 @@ import java.util.List;
 
 public class CustomersDBDAO implements CustomersDAO {
 
+    public static final String IS_CUSTOMER_EXISTS_BY_EMAIL = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `EMAIL` =?  LIMIT 1)";
+    public static final String IS_CUSTOMER_EXISTS_BY_EMAIL_AND_PASS = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `EMAIL` =? AND `PASSWORD`=?  LIMIT 1)";
+    public static final String IS_CUSTOMER_EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `ID`=? LIMIT 1)";
+    public static final String ADD_CUSTOMER = "INSERT INTO `couponsystem`.`customers` (`FIRST_NAME`, `LAST_NAME`,`EMAIL`,`PASSWORD`) VALUES (?,?,?,?);";
+    public static final String GET_CUSTOMER_ID = "SELECT * FROM `couponsystem`.`customers` WHERE `EMAIL`=?";
+    public static final String UPDATE_CUSTOMER = "UPDATE `couponsystem`.`customers` SET `FIRST_NAME` = ?, `LAST_NAME` = ?, `EMAIL` = ?,`PASSWORD` = ?  WHERE (`ID` = ?)";
+    public static final String DELETE_CUSTOMER = "DELETE FROM `couponsystem`.`customers` WHERE ID=?";
+    public static final String DELETE_CUSTOMER_PURCHASES = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`CUSTOMER_ID` = ?)";
+    public static final String GET_ALL_CUSTOMERS = "SELECT * FROM `couponsystem`.`customers`";
+    public static final String GET_ONE_CUSTOMER_BY_ID = "SELECT * FROM `couponsystem`.`customers` WHERE ID=?";
+    public static final String GET_ONE_CUSTOMER_BY_EMAIL = "SELECT * FROM `couponsystem`.`customers` WHERE EMAIL=?";
+    public static final String GET_CUSTOMER_COUPONS = "SELECT * FROM `couponsystem`.`coupons` WHERE `ID`=?";
+    public static final String IS_CUSTOMER_ALREADY_HAVE_COUPON = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers_vs_coupons` WHERE `CUSTOMER_ID` =? AND `COUPON_ID`=?  LIMIT 1)";
+    public static final String GET_COUPONS_OF_CUSTOMER = "SELECT * FROM `couponsystem`.`customers_vs_coupons` WHERE `CUSTOMER_ID`=?";
     private Connection connection = null;
 
 
@@ -30,7 +44,7 @@ public class CustomersDBDAO implements CustomersDAO {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `EMAIL` =?  LIMIT 1)";
+            String sql = IS_CUSTOMER_EXISTS_BY_EMAIL;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -59,7 +73,7 @@ public class CustomersDBDAO implements CustomersDAO {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `EMAIL` =? AND `PASSWORD`=?  LIMIT 1)";
+            String sql = IS_CUSTOMER_EXISTS_BY_EMAIL_AND_PASS;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
@@ -88,7 +102,7 @@ public class CustomersDBDAO implements CustomersDAO {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers` WHERE `ID`=? LIMIT 1)";
+            String sql = IS_CUSTOMER_EXISTS_BY_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -116,7 +130,7 @@ public class CustomersDBDAO implements CustomersDAO {
         Connection connection2 = null;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "INSERT INTO `couponsystem`.`customers` (`FIRST_NAME`, `LAST_NAME`,`EMAIL`,`PASSWORD`) VALUES (?,?,?,?);";
+            String sql = ADD_CUSTOMER;
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             preparedStatement.setString(1, customer.getFirstName());
             preparedStatement.setString(2, customer.getLastName());
@@ -145,7 +159,7 @@ public class CustomersDBDAO implements CustomersDAO {
         int result = -1;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`customers` WHERE `EMAIL`=?";
+            String sql = GET_CUSTOMER_ID;
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             preparedStatement.setString(1, customer.getEmail());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -171,7 +185,7 @@ public class CustomersDBDAO implements CustomersDAO {
         try {
 
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "UPDATE `couponsystem`.`customers` SET `FIRST_NAME` = ?, `LAST_NAME` = ?, `EMAIL` = ?,`PASSWORD` = ?  WHERE (`ID` = ?)";
+            String sql = UPDATE_CUSTOMER;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, customer.getFirstName());
             preparedStatement.setString(2, customer.getLastName());
@@ -196,7 +210,7 @@ public class CustomersDBDAO implements CustomersDAO {
         Connection connection2 = null;
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "DELETE FROM `couponsystem`.`customers` WHERE ID=?";
+            String sql = DELETE_CUSTOMER;
 
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
@@ -219,7 +233,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
         try {
             connection2 = ConnectionPool.getInstance().getConnection();
-            String sql = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`CUSTOMER_ID` = ?)";
+            String sql = DELETE_CUSTOMER_PURCHASES;
             PreparedStatement preparedStatement = connection2.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             preparedStatement.executeUpdate();
@@ -239,7 +253,7 @@ public class CustomersDBDAO implements CustomersDAO {
         List<Customer> customersList = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`customers`";
+            String sql = GET_ALL_CUSTOMERS;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -272,7 +286,7 @@ public class CustomersDBDAO implements CustomersDAO {
         Customer customer = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`customers` WHERE ID=?";
+            String sql = GET_ONE_CUSTOMER_BY_ID;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -304,7 +318,7 @@ public class CustomersDBDAO implements CustomersDAO {
         Customer customer = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`customers` WHERE EMAIL=?";
+            String sql = GET_ONE_CUSTOMER_BY_EMAIL;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -341,7 +355,7 @@ public class CustomersDBDAO implements CustomersDAO {
             connection2 = ConnectionPool.getInstance().getConnection();
 
             for (int couponID : GetCustomerCouponPurchases(customerID)) {
-                String sql = "SELECT * FROM `couponsystem`.`coupons` WHERE `ID`=?";
+                String sql = GET_CUSTOMER_COUPONS;
                 PreparedStatement preparedStatement = connection2.prepareStatement(sql);
                 preparedStatement.setInt(1, couponID);
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -407,7 +421,7 @@ public class CustomersDBDAO implements CustomersDAO {
         try {
             int isExists = -99;
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`customers_vs_coupons` WHERE `CUSTOMER_ID` =? AND `COUPON_ID`=?  LIMIT 1)";
+            String sql = IS_CUSTOMER_ALREADY_HAVE_COUPON;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             preparedStatement.setInt(2, couponID);
@@ -437,7 +451,7 @@ public class CustomersDBDAO implements CustomersDAO {
         try {
 
             connection = ConnectionPool.getInstance().getConnection();
-            String sql = "SELECT * FROM `couponsystem`.`customers_vs_coupons` WHERE `CUSTOMER_ID`=?";
+            String sql = GET_COUPONS_OF_CUSTOMER;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, customerID);
             ResultSet resultSet = preparedStatement.executeQuery();

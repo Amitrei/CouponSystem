@@ -20,13 +20,13 @@ import com.amitrei.facade.CompanyFacade;
 import com.amitrei.facade.CustomerFacade;
 import com.amitrei.security.ClientType;
 import com.amitrei.security.LoginManager;
-import com.amitrei.utils.MyDateUtil;
+import com.amitrei.utils.DateUtil;
 
 
 import java.sql.SQLException;
 
 public class FullTest {
-    MyDateUtil myDateUtil = new MyDateUtil();
+    DateUtil myDateUtil = new DateUtil();
     CouponsDAO couponsDAO = new CouponsDBDAO();
     AdminFacade adminFacade = new AdminFacade();
     CustomerFacade customerFacade = new CustomerFacade();
@@ -97,13 +97,9 @@ public class FullTest {
 
         printTitle("ADDING COMPANY");
         Company company = null;
-        try {
+
             company = new Company("Couponim", "couponim@couponim.com", "password");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
+
         System.out.println("ADDING COMPANY:     " + company.toString());
         try {
             ((AdminFacade) LoggedInAsAdmin).addCompany(company);
@@ -187,15 +183,11 @@ public class FullTest {
         Company company0 = null;
         Company company1 = null;
         Company company2 = null;
-        try {
+
             company0 = new Company("Couponim1", "111@gmail.com", "1111");
             company1 = new Company("Couponim2", "2222@gmail.com", "22222");
             company2 = new Company("Couponim3", "3333@gmail.com", "3333333");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
+
 
         addDummyCompanies(company0, company1, company2);
         System.out.println(((AdminFacade) LoggedInAsAdmin).getAllCompanies());
@@ -253,13 +245,9 @@ public class FullTest {
 
         printTitle("DELETING CUSTOMER");
         System.out.println("### ADDING COUPONS PURCHASE TO THE CUSTOMER ###");
-        try {
+
             company0 = new Company("Couponim1", "111@gmail.com", "1111");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
+
         try {
             adminFacade.addCompany(company0);
         } catch (AlreadyExistsException e) {
