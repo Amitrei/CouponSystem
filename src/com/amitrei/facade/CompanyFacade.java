@@ -23,7 +23,7 @@ public class CompanyFacade extends ClientFacade {
             return true;
         }
 
-        throw new DoesNotExistsException("Company");
+        throw new DoesNotExistsException("incorrect login details, company ");
 
 
     }
@@ -42,7 +42,7 @@ public class CompanyFacade extends ClientFacade {
         if (!couponsDAO.isCouponExists(coupon.getTitle(), coupon.getCompanyID()))
             throw new DoesNotExistsException("Coupon");
 
-        if(couponsDAO.getOneCoupon(coupon.getId()).getCompanyID()!=coupon.getCompanyID()) {
+        if (couponsDAO.getOneCoupon(coupon.getId()).getCompanyID() != coupon.getCompanyID()) {
             throw new IllegalActionException("Cannot change coupon company ID");
         }
 
@@ -75,14 +75,14 @@ public class CompanyFacade extends ClientFacade {
 
     public List<Coupon> getCompanyCoupons(double maxPrice) {
         List<Coupon> companyCoupons = getCompanyCoupons();
-        List<Coupon> companyCouponsFilteredByPrice = new ArrayList<>();
+        List<Coupon> CouponsFilteredByPrice = new ArrayList<>();
 
         for (Coupon coupon : companyCoupons) {
             if (coupon.getPrice() <= maxPrice) {
-                companyCouponsFilteredByPrice.add(coupon);
+                CouponsFilteredByPrice.add(coupon);
             }
         }
-        return companyCouponsFilteredByPrice;
+        return CouponsFilteredByPrice;
     }
 
     public int getCompanyID() {
@@ -90,7 +90,7 @@ public class CompanyFacade extends ClientFacade {
     }
 
 
-    public Company getCompanyDetails() throws DoesNotExistsException {
+    public Company getCompanyDetails() {
         Company company = companiesDAO.getOneCompany(this.companyID);
         company.setCoupons(couponsDAO.getAllCouponsOfCompany(this.companyID));
         return company;

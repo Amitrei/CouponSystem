@@ -10,10 +10,13 @@ import com.amitrei.exceptions.DoesNotExistsException;
 
 
 public abstract class ClientFacade {
+
     protected CompaniesDAO companiesDAO;
     protected CouponsDAO couponsDAO;
     protected CustomersDAO customersDAO;
+
     public ClientFacade() {
+
         companiesDAO = new CompaniesDBDAO();
         couponsDAO = new CouponsDBDAO();
         customersDAO = new CustomersDBDAO();

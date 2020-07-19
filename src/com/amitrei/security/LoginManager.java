@@ -1,4 +1,4 @@
-package com.amitrei.login;
+package com.amitrei.security;
 
 import com.amitrei.exceptions.DoesNotExistsException;
 import com.amitrei.facade.AdminFacade;

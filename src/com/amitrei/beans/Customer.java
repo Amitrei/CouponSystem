@@ -46,13 +46,13 @@ public class Customer {
 
     public void setId(int id) throws IllegalActionException {
 
-        if (this.id == 0) {
-            this.id = id;
-        }
-        else{
+        if (this.id == 0) this.id = id;
 
-throw new IllegalActionException("Cannot change customer ID");
+
+        else {
+            throw new IllegalActionException("Cannot change customer ID");
         }
+
     }
 
     public String getFirstName() {

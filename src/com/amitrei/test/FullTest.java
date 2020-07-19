@@ -1,4 +1,4 @@
-package com.amitrei.main;
+package com.amitrei.test;
 
 
 import com.amitrei.beans.Category;
@@ -18,12 +18,11 @@ import com.amitrei.facade.AdminFacade;
 import com.amitrei.facade.ClientFacade;
 import com.amitrei.facade.CompanyFacade;
 import com.amitrei.facade.CustomerFacade;
-import com.amitrei.login.ClientType;
-import com.amitrei.login.LoginManager;
+import com.amitrei.security.ClientType;
+import com.amitrei.security.LoginManager;
 import com.amitrei.utils.MyDateUtil;
 
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class FullTest {
@@ -39,19 +38,8 @@ public class FullTest {
     public void testAll() {
 
         initTestTitle();
-        Connection connection = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            System.out.println("### Initialized connections ###");
-
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-
-        }
-
+        System.out.println("### Initialized connections ###");
+        System.out.println();
         System.out.println();
         Coupon expiredCoupon = new Coupon(351, Category.FOOD, "EXPIRAED COUPON", "12% discount", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(-1), 5, 20, "image.png");
         couponsDAO.addCoupon(expiredCoupon);
@@ -166,7 +154,11 @@ public class FullTest {
         System.out.println("COMPANY DETAILS FROM DB AFTER UPDATE     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
         System.out.println();
         System.out.println("TRYING CHANGING ID:");
-        company.setId(123);
+        try {
+            company.setId(123);
+        } catch (IllegalActionException e) {
+            System.out.println(e.getMessage());
+        }
 
 
         printTitle("DELETE COMPANY");
@@ -389,7 +381,7 @@ public class FullTest {
         coupon.setId(123);
         System.out.println();
         System.out.println("TRYING TO UPDATE COMPANY ID:");
-        System.out.println("cannot update company name ( there is no setter )");
+        System.out.println("cannot update company id ( there is no setter  + no companyId field in query statment)");
         try {
             companyLoggedIn.updateCoupon(coupon);
         } catch (DoesNotExistsException | IllegalActionException e) {
@@ -459,12 +451,9 @@ public class FullTest {
         System.out.println(companyLoggedIn.getCompanyCoupons(100.0));
         System.out.println();
         printTitle("COMPANY DETAILS");
-        try {
-            System.out.println(companyLoggedIn.getCompanyDetails());
-        } catch (DoesNotExistsException e) {
-            System.out.println(e.getMessage());
 
-        }
+        System.out.println(companyLoggedIn.getCompanyDetails());
+
 
 
         customerTestTitle();
@@ -602,7 +591,16 @@ public class FullTest {
 
         printCloseTest();
         System.out.println("### Shuting down daily job ###");
-        dailyJob.stopIt();
+
+
+        /**
+         * CLOSING THREAD BY INTERPURTING THE 24 HOURS SLEEP BEFORE SHUTTING DOWN
+         *
+         */
+        t1.interrupt();
+        dailyJob.stop();
+
+
         System.out.println("### Closing all connections ###");
         try {
             ConnectionPool.getInstance().closeAllConnections();

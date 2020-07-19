@@ -34,7 +34,12 @@ public class AdminFacade extends ClientFacade {
         }
 
         companiesDAO.addCompany(company);
-        company.setId(companiesDAO.getCompanyIDFromDB(company));
+
+        try {
+            company.setId(companiesDAO.getCompanyIDFromDB(company));
+        } catch (IllegalActionException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 

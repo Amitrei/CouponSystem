@@ -1,6 +1,7 @@
 package com.amitrei.beans;
 
 import com.amitrei.dbdao.CompaniesDBDAO;
+import com.amitrei.exceptions.IllegalActionException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,22 +14,9 @@ public class Company {
     private String password;
     private List<Coupon> coupons = new ArrayList<>();
 
-    public Company(String name, String email, String password, List<Coupon> coupons) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.coupons = coupons;
-    }
 
     public Company(String name, String email, String password) throws SQLException, InterruptedException {
         this.name = name;
-        this.email = email;
-        this.password = password;
-
-    }
-
-    // CTOR for updateCompany
-    public Company(String email, String password) throws SQLException, InterruptedException {
         this.email = email;
         this.password = password;
 
@@ -81,12 +69,13 @@ public class Company {
         this.coupons = coupons;
     }
 
-    public void setId(int id) {
-        if (this.id == 0) {
-            this.id = id;
-        } else {
-            System.out.println("Cannot change company ID");
-        }
+    public void setId(int id) throws IllegalActionException {
+
+
+        if (this.id == 0) this.id = id;
+        else { throw new IllegalActionException("Cannot change company ID"); }
+
+
     }
 
 

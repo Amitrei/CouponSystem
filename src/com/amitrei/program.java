@@ -1,9 +1,6 @@
-package com.amitrei.main;
+package com.amitrei;
 
-import com.amitrei.beans.Category;
-import com.amitrei.beans.Coupon;
-import com.amitrei.dbdao.CouponsDBDAO;
-import com.amitrei.utils.MyDateUtil;
+import com.amitrei.test.FullTest;
 
 public class program {
 

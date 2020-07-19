@@ -65,7 +65,7 @@ public class CouponsDBDAO implements CouponsDAO {
             String sql = "UPDATE `couponsystem`.`coupons` SET  `CATEGORY_ID` = ?,`TITLE`= ? ,`DESCRIPTION` = ?,`START_DATE`=?,`END_DATE`=?,`AMOUNT`=?,`PRICE`=?,`IMAGE`=?  WHERE (`ID` = ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, coupon.getCategory().ordinal() + 1);
-            preparedStatement.setString(2,coupon.getTitle());
+            preparedStatement.setString(2, coupon.getTitle());
             preparedStatement.setString(3, coupon.getDescription());
             preparedStatement.setDate(4, coupon.getSQLStartDate());
             preparedStatement.setDate(5, coupon.getSQLEndDate());

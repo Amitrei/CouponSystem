@@ -11,7 +11,7 @@ public interface CustomersDAO {
     Boolean isCustomerExists(String email);
     Boolean isCustomerExists(String email,String password);
     Boolean isCustomerExists(int customerID);
-    void addCustomer(Customer customer) throws AlreadyExistsException;
+    void addCustomer(Customer customer);
     void updateCustomer(int customerID,Customer customer);
     void deleteCustomer(int customerID);
     List<Customer> getAllCustomers();

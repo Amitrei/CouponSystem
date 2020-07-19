@@ -10,7 +10,6 @@ public interface CompaniesDAO {
 
     Boolean isCompanyExistsById(int companyID);
     Boolean isCompanyExists(String email, String password);
-
     void addCompany(Company company);
     void updateCompany(Company company);
     void deleteCompany(int companyID);

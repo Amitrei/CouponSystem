@@ -18,8 +18,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
      * 0 for non-exists company in the Database
      */
 
-
-
     @Override
     public Boolean isCompanyExists(String companyEmail, String companyPassword) {
         try {

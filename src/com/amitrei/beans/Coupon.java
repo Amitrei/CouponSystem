@@ -1,5 +1,7 @@
 package com.amitrei.beans;
 
+import com.amitrei.exceptions.IllegalActionException;
+
 import java.util.Date;
 
 public class Coupon {
@@ -56,11 +58,17 @@ public class Coupon {
     }
 
     public void setId(int id) {
-        if (this.id == 0) {
-            this.id = id;
-        } else {
-            System.out.println("Cannot change coupon ID");
+
+        if (this.id == 0)  this.id = id;
+
+        else {
+            try {
+                throw new IllegalActionException("Cannot change coupon ID ");
+            } catch (IllegalActionException e) {
+                System.out.println(e.getMessage());
+            }
         }
+
     }
 
     public int getCompanyID() {

@@ -5,14 +5,12 @@ import com.amitrei.dao.CouponsDAO;
 import com.amitrei.dbdao.CouponsDBDAO;
 import com.amitrei.utils.MyDateUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CouponExpirationDailyJob implements Runnable {
     CouponsDAO couponsDAO = new CouponsDBDAO();
     MyDateUtil myDateUtil = new MyDateUtil();
-    private Boolean quit = false;
-
+    private  volatile  Boolean quit = false;
 
     @Override
     public void run() {
@@ -28,20 +26,23 @@ public class CouponExpirationDailyJob implements Runnable {
                     }
                 }
 
+
+
             try {
                 Thread.sleep(1000*60*60*24);
             } catch (InterruptedException e) {
-                e.printStackTrace();
             }
 
         }
     }
 
-    public void stopIt() {
-        Thread.yield();
-        this.quit = true;
+    public void stop() {
+        quit =true;
+
 
     }
+
+
 
 
 }
