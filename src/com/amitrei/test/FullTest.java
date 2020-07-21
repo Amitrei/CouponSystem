@@ -43,9 +43,8 @@ public class FullTest {
         Coupon expiredCoupon = new Coupon(351, Category.FOOD, "EXPIRAED COUPON", "12% discount", myDateUtil.currentDate(), myDateUtil.expiredDateFromToday(-1), 5, 20, "image.png");
         couponsDAO.addCoupon(expiredCoupon);
         System.out.println();
-        System.out.println("Coupon list before thread init");
-        System.out.println();
-        System.out.println(couponsDAO.getAllCoupons());
+        System.out.println("Coupon list with expired coupon before thread init");
+        couponsDAO.getAllCoupons().stream().forEach(System.out::print);
 
         Thread t1 = new Thread(dailyJob);
 
@@ -69,7 +68,7 @@ public class FullTest {
 
         System.out.println();
         System.out.println("Checking if expaired coupon got deleted by the daily job");
-        System.out.println(couponsDAO.getAllCoupons());
+        couponsDAO.getAllCoupons().stream().forEach(System.out::print);
 
 
         adminTestTitle();
@@ -107,7 +106,12 @@ public class FullTest {
         } catch (AlreadyExistsException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("MAKING SURE COMPANY WAS ADDED BY GETTING COMPANIES FROM DB     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+
+
+        System.out.println("MAKING SURE COMPANY WAS ADDED BY GETTING COMPANIES FROM DB     ");
+        ((AdminFacade) LoggedInAsAdmin).getAllCompanies().stream().forEach(System.out::print);
+
+
         System.out.println();
         printDevideLine();
         System.out.println("ADDING THE SAME COMPANY AGAIN:     " + company);
@@ -154,11 +158,7 @@ public class FullTest {
         printDevideLine();
         System.out.println();
         System.out.println("TRYING CHANGING ID:");
-        try {
-            company.setId(123);
-        } catch (IllegalActionException e) {
-            System.out.println(e.getMessage());
-        }
+        company.setId(123);
 
 
         printTitle("DELETE COMPANY");
@@ -171,7 +171,8 @@ public class FullTest {
         System.out.println();
         System.out.println("DELETING COMPANY BY COMPANY ID:" + company.getId());
         System.out.println();
-        System.out.println("BEFORE DELETE GETTING COMPANIES FROM DB     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+        System.out.println("BEFORE DELETE GETTING COMPANIES FROM DB     ");
+        ((AdminFacade) LoggedInAsAdmin).getAllCompanies().stream().forEach(System.out::print);
 
         try {
             ((AdminFacade) LoggedInAsAdmin).deleteCompany(company.getId());
@@ -180,7 +181,9 @@ public class FullTest {
         }
         System.out.println();
 
-        System.out.println("AFTER DELETE GETTING COMPANIES FROM DB     " + ((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+        System.out.println("AFTER DELETE GETTING COMPANIES FROM DB     ");
+        ((AdminFacade) LoggedInAsAdmin).getAllCompanies().stream().forEach(System.out::print);
+
 
         printTitle("GETTING ALL COMPANIES");
 
@@ -193,7 +196,8 @@ public class FullTest {
         addDummyCompanies(company0, company1, company2);
 
 
-        System.out.println(((AdminFacade) LoggedInAsAdmin).getAllCompanies());
+        ((AdminFacade) LoggedInAsAdmin).getAllCompanies().stream().forEach(System.out::print);
+
         printTitle("GETTING SINGLE COMPANY BY ID");
         System.out.println("GETTING COMPANY BY A SINGLE ID: " + company0.getId());
         System.out.println(((AdminFacade) LoggedInAsAdmin).getOneCompany(company0.getId()));
@@ -209,7 +213,7 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
         System.out.println("CHECKING IF CUSTOMER ADDED TO DB:");
-        System.out.println(adminFacade.getAllCustomers());
+        adminFacade.getAllCustomers().stream().forEach(System.out::print);
         System.out.println();
         printDevideLine();
         System.out.println();
@@ -226,12 +230,14 @@ public class FullTest {
         }
 
         printTitle("UPDATING CUSTOMER");
-        System.out.println("UPDATING CUSTOMER FROM " + customer);
+        System.out.println("UPDATING CUSTOMER FROM ");
+        System.out.println(customer);
         customer.setFirstName("Moshe");
         customer.setEmail("Moshes@gmail.com");
         customer.setLastName("Moshiko");
         customer.setPassword("4321");
-        System.out.println("TO " + customer);
+        System.out.println("TO");
+        System.out.println(customer);
         try {
             adminFacade.updateCustomer(customer);
         } catch (AlreadyExistsException e) {
@@ -247,11 +253,8 @@ public class FullTest {
         System.out.println();
         printDevideLine();
         System.out.println("TRYING CHANGING ID:");
-        try {
-            customer.setId(123);
-        } catch (IllegalActionException e) {
-            System.out.println(e.getMessage());
-        }
+
+        customer.setId(123);
 
 
         printTitle("DELETING CUSTOMER");
@@ -271,14 +274,14 @@ public class FullTest {
         couponsDAO.addCouponPurchase(customer.getId(), couponsDAO.getCouponIDFromDB(coupon));
 
 
-        System.out.println("GETTING CUSTOMER COUPON FROM DB");
+        System.out.println("GETTING CUSTOMER COUPONS FROM DB");
         System.out.println(customersDAO.getCustomerCoupons(customer.getId()));
         System.out.println();
         printDevideLine();
         System.out.println();
         System.out.println("DELETING THIS CUSTOMER " + customer);
         System.out.println("ALL CUSTOMERS FROM DB BEFORE DELETED");
-        System.out.println(adminFacade.getAllCustomers());
+        adminFacade.getAllCustomers().stream().forEach(System.out::print);
 
         try {
             adminFacade.deleteCustomer(customer.getId());
@@ -298,9 +301,9 @@ public class FullTest {
 
 
         System.out.println();
-        System.out.println("ALL CUSTOMERS FROM DB AFTER DELETED " + adminFacade.getAllCustomers());
-
-
+        System.out.println("ALL CUSTOMERS FROM DB AFTER DELETED ");
+        adminFacade.getAllCustomers().stream().forEach(System.out::print);
+        System.out.println();
         printTitle("GETTING ALL THE CUSTOMERS:");
         System.out.println("### CREATING DUMMY CUSTOMERS ###");
         Customer customer1 = new Customer("avi", "ron", "Aviron@gmail.com", "1234");
@@ -308,7 +311,8 @@ public class FullTest {
         Customer customer3 = new Customer("Ram", "Kol", "RamKol@gmail.com", "1234");
         creatingCustomerDummies(customer1, customer2, customer3);
         System.out.println("ALL CUSTOMERS:");
-        System.out.println(adminFacade.getAllCustomers());
+
+        adminFacade.getAllCustomers().stream().forEach(System.out::print);
 
         printTitle("GETTING A SINGLE CUSTOMER USING CUSTOMER ID");
         System.out.println("GETTING THE DUMMIE CUSTOMER USING HIS ID: " + customer1.getId());
@@ -343,12 +347,16 @@ public class FullTest {
 
 
         System.out.println("### TRYING TO LOG-IN WITH WRONG PASSWORD ###");
+        ClientFacade wrongPassword = null;
+
         try {
-            System.out.println(LoginManager.getInstance().login("testCompany@gmail.com", "WrongPassword", ClientType.Company));
+            System.out.println(wrongPassword = LoginManager.getInstance().login("testCompany@gmail.com", "WrongPassword", ClientType.Company));
+
         } catch (DoesNotExistsException e) {
             System.out.println(e.getMessage());
         }
 
+        System.out.println(wrongPassword);
         System.out.println();
         System.out.println("### TRYING TO LOG-IN WITH CURRECT PASSWORD ### ");
         try {
@@ -374,7 +382,7 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
         System.out.println("CHECKING IF COUPON IS ADDED TO DB:");
-        System.out.println(companyLoggedIn.getCompanyCoupons());
+        companyLoggedIn.getCompanyCoupons().stream().forEach(System.out::print);
         System.out.println();
         printDevideLine();
         System.out.println();
@@ -397,7 +405,7 @@ public class FullTest {
         }
         System.out.println();
         System.out.println("CHECKING FROM DB IF BOTH COUPONS HAVING THE SAME TITLE BUT DIFFRENTS COMAPNIES:");
-        System.out.println(couponsDAO.getAllCoupons().stream().filter(coupon1 -> coupon1.getTitle().equals("testTitle")).collect(Collectors.toList()));
+        couponsDAO.getAllCoupons().stream().filter(coupon1 -> coupon1.getTitle().equals("testTitle")).collect(Collectors.toList()).forEach(System.out::print);
 
         //Deleting coupon to prevent an a exception on the next test run
         try {
@@ -434,7 +442,7 @@ public class FullTest {
 
         try {
             companyLoggedIn.updateCoupon(coupon);
-        } catch ( IllegalActionException e) {
+        } catch (IllegalActionException e) {
 
             System.out.println(e.getMessage());
         }
@@ -454,7 +462,8 @@ public class FullTest {
 
         System.out.println("DELETING COUPON " + coupon);
         System.out.println("BEFORE DELETING COUPON FROM DB:");
-        System.out.println(couponsDAO.getAllCoupons());
+        couponsDAO.getAllCoupons().stream().forEach(System.out::print);
+        System.out.println();
         System.out.println("AFTER DELETING COUPON FROM DB:");
 
 
@@ -464,14 +473,15 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
 
-        System.out.println(couponsDAO.getAllCoupons());
+        couponsDAO.getAllCoupons().stream().forEach(System.out::print);
 
         printTitle("ALL COUPONS OF COMPANY");
         System.out.println("### ADDING COUPONS DUMMIES ###");
         System.out.println();
         System.out.println("GETTING ALL COUPONS OF THE CURRENT COMPANY:");
 
-        System.out.println(companyLoggedIn.getCompanyCoupons());
+        companyLoggedIn.getCompanyCoupons().stream().forEach(System.out::print);
+
 
         printTitle("ALL COUPONS OF SPECIFIC CATEGORY");
         System.out.println("ALL COUPONS OF THE SPECIFIC CATEGORY:" + Category.FOOD);
@@ -480,7 +490,8 @@ public class FullTest {
         printDevideLine();
         System.out.println();
         System.out.println("ALL COUPONS OF THE SPECIFIC CATEGORY:" + Category.Electricity);
-        System.out.println(companyLoggedIn.getCompanyCoupons(Category.Electricity));
+        companyLoggedIn.getCompanyCoupons(Category.Electricity).stream().forEach(System.out::print);
+
         printTitle("ALL COUPONS BY MAXIMUM PRICE");
         System.out.println("ALL COUPONS BY MAXIMUM PRICE OF:30");
         System.out.println(companyLoggedIn.getCompanyCoupons(30.0));
@@ -516,11 +527,10 @@ public class FullTest {
         }
 
 
-
         Customer myCustomer = customerLoggedIn.getCustomerDetails();
         System.out.println("CUSTOMER LOGIN WITH WRONG DETAILS:");
         try {
-             LoginManager.getInstance().login("amit@gmail.com", "1234WRONG", ClientType.Customer);
+            LoginManager.getInstance().login("amit@gmail.com", "1234WRONG", ClientType.Customer);
         } catch (DoesNotExistsException e) {
             System.out.println(e.getMessage());
 
@@ -539,7 +549,7 @@ public class FullTest {
         }
 
         Coupon myCoupon = couponsDAO.getOneCoupon(coupon.getId());
-        String tempCoupon=myCoupon.toString();
+        String tempCoupon = myCoupon.toString();
 
         System.out.println("TRYING TO PURCHASE THIS COUPON" + myCoupon);
 
@@ -555,7 +565,7 @@ public class FullTest {
 
 
         System.out.println("MAKING SURE COUPON PURCHASED BY GETTING CUSTOMER COUPONS ");
-        System.out.println(customerLoggedIn.getCustomerCoupons());
+        customerLoggedIn.getCustomerCoupons().stream().forEach(System.out::print);
         System.out.println();
         printDevideLine();
         System.out.println();
@@ -577,10 +587,10 @@ public class FullTest {
 
         System.out.println();
         printDevideLine();
-        myCoupon.setEndDate(myDateUtil.expiredDateFromToday(-1));
+        myCoupon.setEndDate(myDateUtil.expiredDateFromToday(-10));
         try {
             companyLoggedIn.updateCoupon(myCoupon);
-        }  catch (IllegalActionException e) {
+        } catch (IllegalActionException e) {
             System.out.println(e.getMessage());
         }
 
@@ -635,11 +645,14 @@ public class FullTest {
         printTitle("ALL COUPONS OF CUSTOMERS");
         System.out.println("### MAKING DUMMY COUPONS AND PURCHASING THEM###");
         System.out.println("ALL COUPONS OF CUSTOMER");
-        System.out.println(customerLoggedIn.getCustomerCoupons());
+        customerLoggedIn.getCustomerCoupons().stream().forEach(System.out::print);
+
+        printDevideLine();
         System.out.println();
         System.out.println("ALL COUPONS OF CUSTOMER BY CATEGORY:" + Category.Electricity);
         System.out.println(customerLoggedIn.getCustomerCoupons(Category.Electricity));
         System.out.println();
+        printDevideLine();
         System.out.println("ALL COUPONS OF CUSTOMER MAXIMUM PRICE OF: 50");
         System.out.println(customerLoggedIn.getCustomerCoupons(50.0));
 

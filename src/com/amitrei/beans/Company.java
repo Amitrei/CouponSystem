@@ -17,20 +17,10 @@ public class Company {
     private List<Coupon> coupons = new ArrayList<>();
 
 
-    public Company(String name, String email, String password){
+    public Company(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-
-    }
-
-    // CTOR for CompaniesDBDAO - getAllCompanies
-
-    public Company(int id, String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.id = id;
 
     }
 
@@ -71,19 +61,21 @@ public class Company {
         this.coupons = coupons;
     }
 
-    public void setId(int id) throws IllegalActionException {
-
-
+    public void setId(int id) {
         if (this.id == 0) this.id = id;
-        else { throw new IllegalActionException("Cannot change company ID"); }
-
-
+        else {
+            try {
+                throw new IllegalActionException("Cannot change company ID");
+            } catch (IllegalActionException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
 
     @Override
     public String toString() {
-        List<String> couponsListForPrint = coupons.stream().flatMap(coupon -> Stream.of(coupon.getId()+"-" +coupon.getTitle())).collect(Collectors.toList());
+        List<String> couponsListForPrint = coupons.stream().flatMap(coupon -> Stream.of(coupon.getId() + "-" + coupon.getTitle())).collect(Collectors.toList());
 
         return "\nCompany" +
                 " id=" + id +

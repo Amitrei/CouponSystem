@@ -262,7 +262,9 @@ public class CustomersDBDAO implements CustomersDAO {
                 String getLastName = resultSet.getString(3);
                 String getEmail = resultSet.getString(4);
                 String getPassword = resultSet.getString(5);
-                customersList.add(new Customer(getID, getFirstName, getLastName, getEmail, getPassword));
+                Customer customer=new Customer(getFirstName, getLastName, getEmail, getPassword);
+                customer.setId(getID);
+                customersList.add(customer);
 
             }
             return customersList;
@@ -296,7 +298,8 @@ public class CustomersDBDAO implements CustomersDAO {
                 String getLastName = resultSet.getString(3);
                 String getEmail = resultSet.getString(4);
                 String getPassword = resultSet.getString(5);
-                customer = new Customer(getID, getFirstName, getLastName, getEmail, getPassword);
+                customer = new Customer(getFirstName, getLastName, getEmail, getPassword);
+                customer.setId(getID);
 
             }
             return customer;
@@ -328,7 +331,8 @@ public class CustomersDBDAO implements CustomersDAO {
                 String getLastName = resultSet.getString(3);
                 String getEmail = resultSet.getString(4);
                 String getPassword = resultSet.getString(5);
-                customer = new Customer(getID, getFirstName, getLastName, getEmail, getPassword);
+                customer = new Customer(getFirstName, getLastName, getEmail, getPassword);
+                customer.setId(getID);
 
             }
             return customer;
@@ -370,7 +374,8 @@ public class CustomersDBDAO implements CustomersDAO {
                     int getAmount = resultSet.getInt(8);
                     Double getPrice = resultSet.getDouble(9);
                     String getImage = resultSet.getString(10);
-                    Coupon customerCoupon = new Coupon(getID, getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                    Coupon customerCoupon = new Coupon(getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                    customerCoupon.setId(getID);
                     customerAllCoupons.add(customerCoupon);
                 }
 

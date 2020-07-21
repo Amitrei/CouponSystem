@@ -3,6 +3,7 @@ package com.amitrei.dbdao;
 import com.amitrei.beans.Company;
 import com.amitrei.dao.CompaniesDAO;
 import com.amitrei.db.ConnectionPool;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -197,7 +198,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 String getName = resultSet.getString(2);
                 String getEmail = resultSet.getString(3);
                 String getPassword = resultSet.getString(4);
-                companiesList.add(new Company(getID, getName, getEmail, getPassword));
+                Company company = new Company(getName, getEmail, getPassword);
+                company.setId(getID);
+                companiesList.add(company);
 
             }
             return companiesList;
@@ -217,7 +220,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public Company getOneCompany(int companyID)  {
+    public Company getOneCompany(int companyID) {
 
         Company company = null;
         try {
@@ -231,7 +234,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 String getName = resultSet.getString(2);
                 String getEmail = resultSet.getString(3);
                 String getPassword = resultSet.getString(4);
-                company = new Company(getID, getName, getEmail, getPassword);
+                company = new Company(getName, getEmail, getPassword);
+                company.setId(getID);
 
             }
             return company;
@@ -249,7 +253,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public Company getOneCompany(String companyEmail)  {
+    public Company getOneCompany(String companyEmail) {
         Company company = null;
 
         try {
@@ -263,8 +267,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 String getName = resultSet.getString(2);
                 String getEmail = resultSet.getString(3);
                 String getPassword = resultSet.getString(4);
-                company = new Company(getID, getName, getEmail, getPassword);
-
+                company = new Company(getName, getEmail, getPassword);
+                company.setId(getID);
             }
             return company;
         } catch (InterruptedException | SQLException e) {
@@ -278,5 +282,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
             connection = null;
         }
         return company;
-    }    }
+    }
+}
 

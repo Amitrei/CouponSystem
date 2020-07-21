@@ -22,6 +22,11 @@ public class DateUtil {
     }
 
 
+
+    public java.sql.Date convertToSql(java.util.Date date) {
+        return new java.sql.Date(date.getTime());
+    }
+
     public java.sql.Date currentDate() {
         Date date = new java.util.Date();
         return new java.sql.Date(date.getTime());

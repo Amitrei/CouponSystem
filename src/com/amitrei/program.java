@@ -1,7 +1,10 @@
 package com.amitrei;
 
+
+import com.amitrei.beans.Company;
+import com.amitrei.dbdao.CompaniesDBDAO;
 import com.amitrei.test.FullTest;
-import com.amitrei.test.FullTestTable;
+
 
 public class program {
 
@@ -9,6 +12,10 @@ public class program {
         Class.forName("com.mysql.cj.jdbc.Driver");
         FullTest test = new FullTest();
         test.testAll();
+
+
+
+
 
     }
 

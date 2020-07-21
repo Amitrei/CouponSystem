@@ -35,11 +35,8 @@ public class AdminFacade extends ClientFacade {
 
         companiesDAO.addCompany(company);
 
-        try {
             company.setId(companiesDAO.getCompanyIDFromDB(company));
-        } catch (IllegalActionException e) {
-            System.out.println(e.getMessage());
-        }
+
 
     }
 
@@ -81,11 +78,9 @@ public class AdminFacade extends ClientFacade {
     public void addCustomer(Customer customer) throws AlreadyExistsException {
         if (customersDAO.isCustomerExists(customer.getEmail())) throw new AlreadyExistsException("Customer");
         customersDAO.addCustomer(customer);
-        try {
+
             customer.setId(customersDAO.getCustomerIDFromDB(customer));
-        } catch (IllegalActionException e) {
-            System.out.println(e.getMessage());
-        }
+
     }
 
 

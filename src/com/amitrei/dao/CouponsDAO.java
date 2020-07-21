@@ -6,7 +6,7 @@ import com.amitrei.beans.Coupon;
 import java.util.List;
 
 public interface CouponsDAO {
-    void addCoupon(Coupon... coupon);
+    void addCoupon(Coupon coupon);
 
     void updateCoupon(int couponID, Coupon coupon);
 

@@ -17,8 +17,10 @@ public class Coupon {
 
     private String description;
 
+
+
     /**
-     * CTOR for method addCoupon - without coupon id argument.
+     * CTOR for method addCoupon
      */
     public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
 
@@ -34,12 +36,8 @@ public class Coupon {
 
     }
 
-    /**
-     * CTOR for getCoupon methods - CategoryID as an int instead of Category.
-     */
 
-    public Coupon(int id, int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-        this.id = id;
+    public Coupon(int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
         this.companyID = companyID;
         // Converting int CategoryID --> Category
         this.category = Category.values()[CategoryID - 1];

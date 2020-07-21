@@ -72,9 +72,7 @@ public class CustomerFacade extends ClientFacade {
     public Customer getCustomerDetails() {
         Customer myCustomer = customersDAO.getOneCustomer(this.customerID);
 
-        for (Coupon coupon : getCustomerCoupons()) {
-            myCustomer.getCoupons().add(coupon);
-        }
+        myCustomer.setCoupons(getCustomerCoupons());
         return myCustomer;
     }
 }
