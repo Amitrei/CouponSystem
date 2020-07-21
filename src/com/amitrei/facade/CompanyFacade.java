@@ -38,9 +38,8 @@ public class CompanyFacade extends ClientFacade {
 
     }
 
-    public void updateCoupon(Coupon coupon) throws DoesNotExistsException, IllegalActionException {
-        if (!couponsDAO.isCouponExists(coupon.getTitle(), coupon.getCompanyID()))
-            throw new DoesNotExistsException("Coupon");
+    public void updateCoupon(Coupon coupon) throws IllegalActionException {
+
 
         if (couponsDAO.getOneCoupon(coupon.getId()).getCompanyID() != coupon.getCompanyID()) {
             throw new IllegalActionException("Cannot change coupon company ID");

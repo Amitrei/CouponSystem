@@ -4,6 +4,8 @@ import com.amitrei.exceptions.IllegalActionException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Customer {
     private int id;
@@ -97,13 +99,15 @@ public class Customer {
 
     @Override
     public String toString() {
+        List<String> couponsListForPrint = coupons.stream().flatMap(coupon -> Stream.of(coupon.getId()+"-" +coupon.getTitle())).collect(Collectors.toList());
         return " \nCustomer{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", coupons=" + coupons +
+                ", coupons=" +  couponsListForPrint +
                 "} \n";
     }
+
 }
