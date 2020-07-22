@@ -22,6 +22,7 @@ public interface CouponsDAO {
 
     boolean isCouponExists(int couponID);
 
+
     boolean isCouponExists(String couponTitle, int companyID);
 
      List<Coupon> getAllCouponsOfCompany(int companyID);

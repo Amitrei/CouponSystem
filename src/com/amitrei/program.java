@@ -22,11 +22,11 @@ public class program {
     public static void main(String[] args) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         FullTest test = new FullTest();
-        test.testAll();
+//        test.testAll();
 
 
-//        InterviewTest interviewTest = new InterviewTest();
-//        interviewTest.Test();
+        InterviewTest interviewTest = new InterviewTest();
+        interviewTest.Test();
 
 
 
