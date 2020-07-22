@@ -36,6 +36,11 @@ public class Coupon {
         return id;
     }
 
+
+    /**
+     * Injecting the auto increment ID from the setter with a lock and not from CTOR to prevent custom id update.
+     */
+
     public void setId(int id) {
 
         if (this.id == 0) this.id = id;

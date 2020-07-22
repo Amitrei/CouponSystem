@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import static com.amitrei.db.DBCreateQueries.*;
+
 public class DBManager {
     private static final String url="jdbc:mysql://localhost:3306/couponsystem?createDatabaseIfNotExist=TRUE&useTimezone=TRUE&serverTimezone=UTC";
     private static final String user = "root";
@@ -47,6 +49,14 @@ public class DBManager {
         }
 
 
+        }
+
+        public void initDBTables() {
+        createTable(CREATE_COMPANIES_TABLE);
+        createTable(CREATE_CUSTOMERS_TABLE);
+        createTable(CREATE_CATEGORIES_TABLE);
+        createTable(CREATE_COUPONS_TABLE);
+        createTable(CREATE_CUSTOMERS_VS_COUPONS_TABLE);
         }
 
 }

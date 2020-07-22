@@ -29,6 +29,7 @@ public class CouponExpirationDailyJob implements Runnable {
 
 
             try {
+                // 24 hours
                 Thread.sleep(1000*60*60*24);
             } catch (InterruptedException e) {
             }

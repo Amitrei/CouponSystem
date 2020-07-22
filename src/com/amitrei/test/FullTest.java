@@ -124,15 +124,27 @@ public class FullTest {
 
         System.out.println();
         printSeperationLine();
-        System.out.println("ADDING THE SAME COMPANY AGAIN:     " + company);
+        Company companyWithSameName=new Company(company.getName(),"TestComp@gmail.com","1234");
+        System.out.println("ADDING COMPANY WITH THE SAME COMPANY NAME:     " + companyWithSameName);
         try {
-            ((AdminFacade) LoggedInAsAdmin).addCompany(company);
+            ((AdminFacade) LoggedInAsAdmin).addCompany(companyWithSameName);
         } catch (AlreadyExistsException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
 
+        printSeperationLine();
+        System.out.println();
 
+         companyWithSameName=new Company("TestComp",company.getEmail(),"1234");
+        System.out.println("ADDING COMPANY WITH THE SAME COMPANY EMAIL:     " + companyWithSameName);
+        try {
+            ((AdminFacade) LoggedInAsAdmin).addCompany(companyWithSameName);
+        } catch (AlreadyExistsException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println();
         printTitle("UPDATE COMPANY");
         System.out.println("COMPANY DETAILS BEFORE UPDATE FROM THE DB     " + ((AdminFacade) LoggedInAsAdmin).getOneCompany(company.getId()));
 
@@ -258,14 +270,14 @@ public class FullTest {
             System.out.println(e.getMessage());
         }
         try {
-            System.out.println("CHECKING UPDATE FROM DB: " + adminFacade.getOneCustomer(customer.getId()));
+            System.out.println("CHECKING UPDATE FROM DB: ");
+            System.out.println( adminFacade.getOneCustomer(customer.getId()));
         } catch (DoesNotExistsException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
         printSeperationLine();
         System.out.println("TRYING CHANGING ID:");
-
         customer.setId(123);
 
 

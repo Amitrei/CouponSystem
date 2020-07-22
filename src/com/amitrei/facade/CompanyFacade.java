@@ -36,6 +36,7 @@ public class CompanyFacade extends ClientFacade {
         couponsDAO.addCoupon(coupon);
         coupon.setId(couponsDAO.getCouponIDFromDB(coupon));
 
+
     }
 
 
