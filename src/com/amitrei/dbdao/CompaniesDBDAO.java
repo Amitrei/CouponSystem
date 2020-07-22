@@ -12,6 +12,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
     public static final String IF_EXISTS_BY_EMAIL_AND_PASS = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL`=? AND `PASSWORD`=? LIMIT 1)";
     public static final String IS_COMPANY_EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `ID`=? LIMIT 1)";
+    public static final String IS_COMPANY_EXISTS_BY_EMAIL = "SELECT EXISTS(SELECT 1 FROM `couponsystem`.`companies` WHERE `EMAIL`=? LIMIT 1)";
     public static final String ADD_COMPANY = "INSERT INTO `couponsystem`.`companies` (`NAME`, `EMAIL`,`PASSWORD`) VALUES (?,?,?);";
     public static final String GET_ID_OF_COMPANY = "SELECT * FROM `couponsystem`.`companies` WHERE `NAME`=?";
     public static final String UPDATE_COMPANY = "UPDATE `couponsystem`.`companies` SET  `EMAIL` = ?, `PASSWORD` = ? WHERE (`ID` = ?)";
@@ -49,6 +50,34 @@ public class CompaniesDBDAO implements CompaniesDAO {
         }
         return false;
     }
+
+    @Override
+    public Boolean isCompanyExistsByEmail(String companyEmail) {
+        try {
+            int isExists = -99;
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = IS_COMPANY_EXISTS_BY_EMAIL;
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, companyEmail);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                isExists = resultSet.getInt(1);
+            }
+            return isExists > 0;
+
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                ConnectionPool.getInstance().restoreConnection(connection);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            connection = null;
+        }
+        return false;
+    }
+
 
     public Boolean isCompanyExistsById(int companyID) {
         try {

@@ -1,5 +1,6 @@
 package com.amitrei.dbdao;
 
+import com.amitrei.beans.Category;
 import com.amitrei.beans.Coupon;
 import com.amitrei.dao.CouponsDAO;
 import com.amitrei.db.ConnectionPool;
@@ -76,8 +77,8 @@ public class CouponsDBDAO implements CouponsDAO {
             preparedStatement.setInt(1, coupon.getCategory().ordinal() + 1);
             preparedStatement.setString(2, coupon.getTitle());
             preparedStatement.setString(3, coupon.getDescription());
-            preparedStatement.setDate(4, coupon.getSQLStartDate());
-            preparedStatement.setDate(5, coupon.getSQLEndDate());
+            preparedStatement.setDate(4, dateUtil.convertToSql(coupon.getStartDate()));
+            preparedStatement.setDate(5, dateUtil.convertToSql(coupon.getEndDate()));
             preparedStatement.setInt(6, coupon.getAmount());
             preparedStatement.setDouble(7, coupon.getPrice());
             preparedStatement.setString(8, coupon.getImage());
@@ -142,7 +143,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 int getAmount = resultSet.getInt(8);
                 Double getPrice = resultSet.getDouble(9);
                 String getImage = resultSet.getString(10);
-                Coupon coupon = new Coupon(getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                Coupon coupon = new Coupon(getCompanyID, Category.values()[getCategoryID - 1], getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
                 coupon.setId(getID);
                 couponsList.add(coupon);
             }
@@ -208,7 +209,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 int getAmount = resultSet.getInt(8);
                 Double getPrice = resultSet.getDouble(9);
                 String getImage = resultSet.getString(10);
-                Coupon coupon=new Coupon(getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                Coupon coupon=new Coupon(getCompanyID, Category.values()[getCategoryID - 1], getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
                 coupon.setId(getID);
                 couponsList.add(coupon);
             }
@@ -249,7 +250,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 int getAmount = resultSet.getInt(8);
                 Double getPrice = resultSet.getDouble(9);
                 String getImage = resultSet.getString(10);
-                coupon = new Coupon(getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                coupon = new Coupon(getCompanyID, Category.values()[getCategoryID - 1], getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
                 coupon.setId(getID);
             }
             return coupon;

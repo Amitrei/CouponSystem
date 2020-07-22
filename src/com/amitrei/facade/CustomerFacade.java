@@ -21,9 +21,7 @@ public class CustomerFacade extends ClientFacade {
             this.customerID = customersDAO.getOneCustomer(email).getId();
 
             return true;
-        }
-
-        else {
+        } else {
             throw new DoesNotExistsException("incorrect login details, customer ");
         }
     }
@@ -31,13 +29,14 @@ public class CustomerFacade extends ClientFacade {
     public void purchaseCoupon(Coupon coupon) throws DoesNotExistsException, IllegalActionException {
         if (!couponsDAO.isCouponExists(coupon.getId())) throw new DoesNotExistsException("Coupon");
 
-        else if (customersDAO.isCustomerAlreadyHaveCoupon(this.customerID, coupon.getId()))
+        if (customersDAO.isCustomerAlreadyHaveCoupon(this.customerID, coupon.getId()))
             throw new IllegalActionException("Customer already purchased this coupon");
 
-        else if (coupon.getAmount() <= 0) throw new IllegalActionException("Coupon out of stock");
+        if (coupon.getAmount() <= 0) throw new IllegalActionException("Coupon out of stock");
 
 
-        else if (myDateUtil.isDatePassed(coupon.getSQLEndDate())) throw new IllegalActionException("Coupon already expired");
+        if (myDateUtil.isDatePassed(myDateUtil.convertToSql(coupon.getEndDate())))
+            throw new IllegalActionException("Coupon already expired");
 
 
         else {
@@ -71,7 +70,6 @@ public class CustomerFacade extends ClientFacade {
 
     public Customer getCustomerDetails() {
         Customer myCustomer = customersDAO.getOneCustomer(this.customerID);
-
         myCustomer.setCoupons(getCustomerCoupons());
         return myCustomer;
     }

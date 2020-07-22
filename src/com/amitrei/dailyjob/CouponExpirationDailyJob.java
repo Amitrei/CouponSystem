@@ -20,7 +20,7 @@ public class CouponExpirationDailyJob implements Runnable {
 
             List<Coupon> allCoupons =couponsDAO.getAllCoupons();
                 for (Coupon coupon : allCoupons) {
-                    if (myDateUtil.isDatePassed(coupon.getSQLEndDate())) {
+                    if (myDateUtil.isDatePassed(myDateUtil.convertToSql(coupon.getEndDate()))) {
                         couponsDAO.deleteCouponPurchase(coupon.getId());
                         couponsDAO.deleteCoupon(coupon.getId());
                     }

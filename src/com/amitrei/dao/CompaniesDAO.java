@@ -1,14 +1,11 @@
 package com.amitrei.dao;
-
 import com.amitrei.beans.Company;
-
-import com.amitrei.exceptions.DoesNotExistsException;
-
 import java.util.List;
 
 public interface CompaniesDAO {
 
     Boolean isCompanyExistsById(int companyID);
+    Boolean isCompanyExistsByEmail(String companyEmail);
     Boolean isCompanyExists(String email, String password);
     void addCompany(Company company);
     void updateCompany(Company company);

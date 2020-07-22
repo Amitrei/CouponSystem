@@ -3,6 +3,7 @@ public class DBCreateQueries {
 
     /**
      * All the creating tables queries
+     * of the coupon system
      */
 
     public static final String CREATE_COMPANIES_TABLE="CREATE TABLE `couponsystem`.`companies` (\n" +

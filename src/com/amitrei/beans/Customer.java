@@ -86,13 +86,13 @@ public class Customer {
     public String toString() {
         List<String> couponsListForPrint = coupons.stream().flatMap(coupon -> Stream.of(coupon.getId()+"-" +coupon.getTitle())).collect(Collectors.toList());
         return
-                "id=" + id +
+                "Customer id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", coupons=" +  couponsListForPrint +
-                "} \n";
+                " \n";
     }
 
 }

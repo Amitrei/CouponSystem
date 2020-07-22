@@ -3,7 +3,6 @@ package com.amitrei.dao;
 import com.amitrei.beans.Category;
 import com.amitrei.beans.Coupon;
 import com.amitrei.beans.Customer;
-import com.amitrei.exceptions.AlreadyExistsException;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface CustomersDAO {
     List<Coupon> getCustomerCoupons(int customerID,double maxPrice);
     boolean isCustomerAlreadyHaveCoupon(int customerID, int couponID);
     int getCustomerIDFromDB(Customer customer);
-    void deleteCustomerPurchaseHistory(int customerID);
+    void deleteCustomerPurchases(int customerID);
     List<Integer> GetCustomerCouponPurchases(int customerID);
 
 }

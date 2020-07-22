@@ -14,14 +14,9 @@ public class Coupon {
     private int amount;
     private double price;
     private String image;
-
     private String description;
 
 
-
-    /**
-     * CTOR for method addCoupon
-     */
     public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
 
         this.companyID = companyID;
@@ -37,27 +32,13 @@ public class Coupon {
     }
 
 
-    public Coupon(int companyID, int CategoryID, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-        this.companyID = companyID;
-        // Converting int CategoryID --> Category
-        this.category = Category.values()[CategoryID - 1];
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.amount = amount;
-        this.price = price;
-        this.image = image;
-        this.description = description;
-
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
 
-        if (this.id == 0)  this.id = id;
+        if (this.id == 0) this.id = id;
 
         else {
             try {
@@ -98,9 +79,6 @@ public class Coupon {
         return this.startDate;
     }
 
-    public java.sql.Date getSQLStartDate() {
-        return new java.sql.Date(startDate.getTime());
-    }
 
     public void setStartDate(java.util.Date startDate) {
         this.startDate = startDate;
@@ -108,10 +86,6 @@ public class Coupon {
 
     public java.util.Date getEndDate() {
         return this.endDate;
-    }
-
-    public java.sql.Date getSQLEndDate() {
-        return new java.sql.Date(endDate.getTime());
     }
 
     public void setEndDate(java.util.Date endDate) {

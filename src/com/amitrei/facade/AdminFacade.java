@@ -16,8 +16,13 @@ public class AdminFacade extends ClientFacade {
 
 
     @Override
-    public boolean login(String email, String password) {
-        return email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD);
+    public boolean login(String email, String password) throws DoesNotExistsException {
+
+        if(!email.equals(ADMIN_EMAIL) || !password.equals(ADMIN_PASSWORD))
+            throw new DoesNotExistsException("Inccorect login details");
+
+
+        return true;
     }
 
 
@@ -35,26 +40,29 @@ public class AdminFacade extends ClientFacade {
 
         companiesDAO.addCompany(company);
 
-            company.setId(companiesDAO.getCompanyIDFromDB(company));
+        company.setId(companiesDAO.getCompanyIDFromDB(company));
 
 
     }
 
     public void updateCompany(Company company) throws IllegalActionException, DoesNotExistsException {
 
-        // Cannot change the company name
         if (!getOneCompany(company.getId()).getName().equals(company.getName()))
             throw new IllegalActionException("cannot update company name");
 
-        else if (!companiesDAO.isCompanyExistsById(company.getId()))
+        if (!companiesDAO.isCompanyExistsById(company.getId()))
             throw new DoesNotExistsException("company");
+
+        if (companiesDAO.isCompanyExistsByEmail(company.getEmail()) && companiesDAO.getOneCompany(company.getEmail()).getId() != company.getId())
+            throw new IllegalActionException("cannot update to an already exists email address.");
+
 
         companiesDAO.updateCompany(company);
     }
 
     public void deleteCompany(int companyID) throws DoesNotExistsException {
 
-        List<Coupon> allCouponsOfCompany=couponsDAO.getAllCouponsOfCompany(companyID);
+        List<Coupon> allCouponsOfCompany = couponsDAO.getAllCouponsOfCompany(companyID);
 
         if (!companiesDAO.isCompanyExistsById(companyID)) throw new DoesNotExistsException("company");
         if (allCouponsOfCompany.size() > 0) {
@@ -79,7 +87,7 @@ public class AdminFacade extends ClientFacade {
         if (customersDAO.isCustomerExists(customer.getEmail())) throw new AlreadyExistsException("Customer");
         customersDAO.addCustomer(customer);
 
-            customer.setId(customersDAO.getCustomerIDFromDB(customer));
+        customer.setId(customersDAO.getCustomerIDFromDB(customer));
 
     }
 
@@ -87,13 +95,17 @@ public class AdminFacade extends ClientFacade {
     public void updateCustomer(Customer customer) throws DoesNotExistsException, AlreadyExistsException {
 
         if (!customersDAO.isCustomerExists(customer.getId())) throw new DoesNotExistsException("Customer");
-        if (customersDAO.isCustomerExists(customer.getEmail())) throw new AlreadyExistsException("Customer");
+
+        if (customersDAO.isCustomerExists(customer.getEmail()) && customersDAO.getOneCustomer(customer.getEmail()).getId() != customer.getId())
+            throw new AlreadyExistsException("Customer");
+
+
         customersDAO.updateCustomer(customer.getId(), customer);
     }
 
     public void deleteCustomer(int customerID) throws DoesNotExistsException {
         if (!customersDAO.isCustomerExists(customerID)) throw new DoesNotExistsException("Customer");
-        customersDAO.deleteCustomerPurchaseHistory(customerID);
+        customersDAO.deleteCustomerPurchases(customerID);
         customersDAO.deleteCustomer(customerID);
     }
 

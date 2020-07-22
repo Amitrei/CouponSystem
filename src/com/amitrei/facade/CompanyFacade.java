@@ -38,9 +38,11 @@ public class CompanyFacade extends ClientFacade {
 
     }
 
+
+
+
+
     public void updateCoupon(Coupon coupon) throws IllegalActionException {
-
-
         if (couponsDAO.getOneCoupon(coupon.getId()).getCompanyID() != coupon.getCompanyID()) {
             throw new IllegalActionException("Cannot change coupon company ID");
         }
@@ -64,7 +66,7 @@ public class CompanyFacade extends ClientFacade {
 
         // Testing stream
         List<Coupon> companyCoupons = getCompanyCoupons();
-        var newListFiltered = companyCoupons.stream()
+        List<Coupon> newListFiltered = companyCoupons.stream()
                 .filter(coupon -> coupon.getCategory().equals(category))
                 .collect(Collectors.toList());
 

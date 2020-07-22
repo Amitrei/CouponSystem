@@ -153,7 +153,6 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
 
-    // Getting the id by searching email
     public int getCustomerIDFromDB(Customer customer) {
         Connection connection2 = null;
         int result = -1;
@@ -228,7 +227,7 @@ public class CustomersDBDAO implements CustomersDAO {
         }
     }
 
-    public void deleteCustomerPurchaseHistory(int customerID) {
+    public void deleteCustomerPurchases(int customerID) {
         Connection connection2 = null;
 
         try {
@@ -374,7 +373,7 @@ public class CustomersDBDAO implements CustomersDAO {
                     int getAmount = resultSet.getInt(8);
                     Double getPrice = resultSet.getDouble(9);
                     String getImage = resultSet.getString(10);
-                    Coupon customerCoupon = new Coupon(getCompanyID, getCategoryID, getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                    Coupon customerCoupon = new Coupon(getCompanyID, Category.values()[getCategoryID - 1], getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
                     customerCoupon.setId(getID);
                     customerAllCoupons.add(customerCoupon);
                 }
