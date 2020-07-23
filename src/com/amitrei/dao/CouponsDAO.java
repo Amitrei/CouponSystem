@@ -25,10 +25,11 @@ public interface CouponsDAO {
 
     boolean isCouponExists(String couponTitle, int companyID);
 
-     List<Coupon> getAllCouponsOfCompany(int companyID);
+    List<Coupon> getAllCouponsOfCompany(int companyID);
 
     void deleteCouponsPurchasesOfCompany(int couponCompanyID);
 
     int getCouponIDFromDB(Coupon coupon);
+
     void deleteCouponPurchase(int couponID);
 }

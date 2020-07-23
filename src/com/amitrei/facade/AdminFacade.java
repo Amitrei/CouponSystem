@@ -18,7 +18,7 @@ public class AdminFacade extends ClientFacade {
     @Override
     public boolean login(String email, String password) throws DoesNotExistsException {
 
-        if(!email.equals(ADMIN_EMAIL) || !password.equals(ADMIN_PASSWORD))
+        if (!email.equals(ADMIN_EMAIL) || !password.equals(ADMIN_PASSWORD))
             throw new DoesNotExistsException("Inccorect login details");
 
 

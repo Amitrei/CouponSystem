@@ -518,17 +518,17 @@ public class FullTest {
 
         printTitle("ALL COUPONS BY MAXIMUM PRICE");
         System.out.println("ALL COUPONS BY MAXIMUM PRICE OF:30");
-        System.out.println(companyLoggedIn.getCompanyCoupons(30.0));
+       companyLoggedIn.getCompanyCoupons(30.0).stream().forEach(System.out::print);
         System.out.println();
         printSeperationLine();
         System.out.println();
         System.out.println("ALL COUPONS BY MAXIMUM PRICE OF:60");
-        System.out.println(companyLoggedIn.getCompanyCoupons(60.0));
+        companyLoggedIn.getCompanyCoupons(60.0).stream().forEach(System.out::print);
         System.out.println();
         printSeperationLine();
         System.out.println();
         System.out.println("ALL COUPONS BY MAXIMUM PRICE OF:100");
-        System.out.println(companyLoggedIn.getCompanyCoupons(100.0));
+        companyLoggedIn.getCompanyCoupons(100.0).stream().forEach(System.out::print);
         System.out.println();
         printTitle("COMPANY DETAILS");
 

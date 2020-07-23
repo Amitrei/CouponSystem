@@ -7,11 +7,10 @@ import java.sql.SQLException;
 import static com.amitrei.db.DBCreateQueries.*;
 
 public class DBManager {
-    private static final String url="jdbc:mysql://localhost:3306/couponsystem?createDatabaseIfNotExist=TRUE&useTimezone=TRUE&serverTimezone=UTC";
+    private static final String url = "jdbc:mysql://localhost:3306/couponsystem?createDatabaseIfNotExist=TRUE&useTimezone=TRUE&serverTimezone=UTC";
     private static final String user = "root";
-    private static final String password="1234";
+    private static final String password = "1234";
     private static Connection connection = null;
-
 
 
     public static String getUrl() {
@@ -45,18 +44,18 @@ public class DBManager {
                 e.printStackTrace();
 
             }
-            connection=null;
+            connection = null;
         }
 
 
-        }
+    }
 
-        public void initDBTables() {
+    public void initDBTables() {
         createTable(CREATE_COMPANIES_TABLE);
         createTable(CREATE_CUSTOMERS_TABLE);
         createTable(CREATE_CATEGORIES_TABLE);
         createTable(CREATE_COUPONS_TABLE);
         createTable(CREATE_CUSTOMERS_VS_COUPONS_TABLE);
-        }
+    }
 
 }

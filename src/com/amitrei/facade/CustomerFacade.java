@@ -39,13 +39,13 @@ public class CustomerFacade extends ClientFacade {
             throw new IllegalActionException("Coupon already expired");
 
 
-        else {
+
 
             couponsDAO.addCouponPurchase(this.customerID, coupon.getId());
             coupon.setAmount(coupon.getAmount() - 1);
             couponsDAO.updateCoupon(coupon.getId(), coupon);
 
-        }
+
     }
 
 

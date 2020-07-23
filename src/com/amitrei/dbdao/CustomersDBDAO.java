@@ -261,7 +261,7 @@ public class CustomersDBDAO implements CustomersDAO {
                 String getLastName = resultSet.getString(3);
                 String getEmail = resultSet.getString(4);
                 String getPassword = resultSet.getString(5);
-                Customer customer=new Customer(getFirstName, getLastName, getEmail, getPassword);
+                Customer customer = new Customer(getFirstName, getLastName, getEmail, getPassword);
                 customer.setId(getID);
                 customersList.add(customer);
 

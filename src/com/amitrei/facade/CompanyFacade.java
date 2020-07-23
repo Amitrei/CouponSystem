@@ -40,16 +40,13 @@ public class CompanyFacade extends ClientFacade {
     }
 
 
-
-
-
     public void updateCoupon(Coupon coupon) throws IllegalActionException {
         if (couponsDAO.getOneCoupon(coupon.getId()).getCompanyID() != coupon.getCompanyID()) {
             throw new IllegalActionException("Cannot change coupon company ID");
         }
 
-        for(Coupon couponOfCompany : couponsDAO.getAllCouponsOfCompany(companyID)) {
-            if(couponOfCompany.getTitle().equals(coupon.getTitle()) && couponOfCompany.getId() != coupon.getId()) {
+        for (Coupon couponOfCompany : couponsDAO.getAllCouponsOfCompany(companyID)) {
+            if (couponOfCompany.getTitle().equals(coupon.getTitle()) && couponOfCompany.getId() != coupon.getId()) {
                 throw new IllegalActionException("Title already in use by this company");
             }
         }

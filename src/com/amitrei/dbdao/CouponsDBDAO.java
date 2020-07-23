@@ -101,8 +101,6 @@ public class CouponsDBDAO implements CouponsDAO {
     public void deleteCouponsPurchasesOfCompany(int couponCompanyID) {
         Connection connection2 = null;
 
-        // Looping over an ArrayList of all coupons of the same company
-
         try {
             for (Coupon coupon : getAllCouponsOfCompany(couponCompanyID)) {
                 connection2 = ConnectionPool.getInstance().getConnection();
@@ -209,7 +207,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 int getAmount = resultSet.getInt(8);
                 Double getPrice = resultSet.getDouble(9);
                 String getImage = resultSet.getString(10);
-                Coupon coupon=new Coupon(getCompanyID, Category.values()[getCategoryID - 1], getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
+                Coupon coupon = new Coupon(getCompanyID, Category.values()[getCategoryID - 1], getTitle, getDescription, getStartDate, getEndDate, getAmount, getPrice, getImage);
                 coupon.setId(getID);
                 couponsList.add(coupon);
             }
