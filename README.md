@@ -10,7 +10,13 @@ This project is was created as a final project of a Fullstack bootcamp at JohnBy
 **The project is seperated to 3 differents repository:**
 
 
-## Phase 1 - The system core and business logic using old school Java ( your currently on this repository )
-This phase was made in basic java with no frameworks or any third party. <br/>
+## CouponSystem - The system using old school Java ( your currently on this repository ) : 
+*This repository is more educational and not in use in the live porject.*
+it was made in basic java with no frameworks or any third party. <br/>
 Creating the core of the system using design patterns such as : Facade, Singleton and more. <br/>
 Managing all the data with MYSQL using JDBC and managing a functional connection pool.
+
+## CouponSystemPhase2 - Spring Framework back-end :
+<a href=""
+
+
