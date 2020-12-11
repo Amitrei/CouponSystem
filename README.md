@@ -23,7 +23,7 @@ This project was made as a final project of a Fullstack bootcamp at JohnByrce co
 ## CouponSystem - The system using old school Java  : 
 [Click here to go the repository](https://github.com/Amitrei/CouponSystem) <br/>
 *This repository is more educational and not in use in the live project.* <br/>
-it was made in basic java with no frameworks or any other third party. <br/>
+- This repository is made in basic java with no frameworks or any other third party. <br/>
 - Creating the core and the business logic of the system using design patterns such as : Facade, Singleton and more.<br/>
 - Managing all the data with MYSQL using JDBC and managing a functional connection pool.
 <div style="width:100%;display:flex;justify-content:space-around;align-items:center;">
