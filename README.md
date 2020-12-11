@@ -16,7 +16,7 @@
 ## About the project:
 Publish,manage,purchase,sell and many more options on the platform.<br/>
 Companies will increase their exposure by publish their coupons and the customers will enjoy the specials discounts. <br/>
-This project is was created as a final project of a Fullstack bootcamp at JohnByrce college.<br/>
+This project was made as a final project of a Fullstack bootcamp at JohnByrce college.<br/>
 **The project is seperated to 3 differents repository:**
 
 
